@@ -1,5 +1,6 @@
 #include "Massive.h"
 #include <iostream>
+#include <string>
 #include <fstream>
 
 using namespace std;
@@ -53,6 +54,8 @@ Massive::~Massive(void){
 void Massive :: Create() {
 	cout << "1) Заполнить внутри класса\n\n2) Чтение из файла\nДругое значение - чтение из file.txt\n>>" << endl;
 	int x;
+	string a;
+
 	cin >> x;
 
 	switch (x) {
@@ -61,9 +64,8 @@ void Massive :: Create() {
 		cout << "n: "; cin >> n;
 	case(2):
 		cout << "Введите путь к файлу.\nФайл должен иметь вид: int n int m float[n][m]\nСперва имеет 2 целых числа, а потом матрицу. Путь << ";
-		char* a = new char[40];
-		cin >> a;
-		ReadFile(a);
+		getline(cin,a);
+		ReadFile((char*)&a);
 		break;
 	default:
 		cout << "Вы ничего из списка не выбрали, поэтому заполним из файла file.txt, котоая лежит в директории программы.\n";

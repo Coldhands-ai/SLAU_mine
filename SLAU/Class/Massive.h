@@ -19,5 +19,6 @@ public:
 	Massive& operator-(Massive& temp);
 	Massive& operator=(Massive& temp);
 	Massive& operator*(Massive& temp);
+
 };
 

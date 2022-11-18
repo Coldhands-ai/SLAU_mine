@@ -40,19 +40,9 @@ float** ReadFile(char* S) {
 	return matrix;
 }
 
+
 int main() {
 	setlocale(LC_ALL, "rus");
-	cout << "S" << endl;/*
-	char* a = new char[40];
-	cin >> a;
-	float** x = ReadFile(a);
-	
-	for (int i = 0; x[i][0]!=NULL; i++){
-		cout << x[i][0]  << endl;
-	}*/
 
-	Massive A;
-	A.Create();
-	
 }
 
