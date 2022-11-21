@@ -12,6 +12,7 @@ public:
 	~Matrix();
 	void Create(int, int); // создание массива внутри класса
 	void Create(); // Можно вытащить массив из файла
+	void Create(char*); // Вытащить массив из файла
 	void CreateNULL(int, int); // создание пустого
 	void Show();
 	void ReadFile(char*);

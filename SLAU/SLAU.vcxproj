@@ -139,8 +139,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="C:\Users\ruzil\Downloads\MLlab1.cpp" />
-    <ClCompile Include="C:\Users\ruzil\Downloads\Telegram Desktop\Alimpiada.cpp" />
     <ClCompile Include="Class\Matrix.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

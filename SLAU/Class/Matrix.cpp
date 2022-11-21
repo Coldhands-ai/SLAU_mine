@@ -52,9 +52,9 @@ Matrix::~Matrix(void){
 }
 
 void Matrix :: Create() {
-	cout << "1) Заполнить внутри класса\n\n2) Чтение из файла\nДругое значение - чтение из file.txt\n>>" << endl;
+	cout << "1) Заполнить внутри класса\n\n2) Чтение из файла\nДругое значение - чтение из file.txt\n>> ";
 	int x;
-	string a;
+	char a[100];
 
 	cin >> x;
 
@@ -62,16 +62,22 @@ void Matrix :: Create() {
 	case(1):
 		cout << "Введите размерность массива/\n";
 		cout << "n: "; cin >> n;
+		cout << "m: "; cin >> m;
+		Create(n, m);
 	case(2):
 		cout << "Введите путь к файлу.\nФайл должен иметь вид: int n int m float[n][m]\nСперва имеет 2 целых числа, а потом матрицу. Путь << ";
-		getline(cin,a);
-		ReadFile((char*)&a);
+		cin>>a;
+		ReadFile(a);
 		break;
 	default:
-		cout << "Вы ничего из списка не выбрали, поэтому заполним из файла file.txt, котоая лежит в директории программы.\n";
-		ReadFile((char*)"file.txt");
+		cout << "Вы ничего из списка не выбрали, поэтому заполним из файла A.txt, котоая лежит в директории программы.\n";
+		ReadFile((char*)"A.txt");
 		break;
 	}
+}
+
+void Matrix::Create(char* S) {
+	ReadFile(S);
 }
 
  void Matrix::Create(int n, int m) {
@@ -83,7 +89,7 @@ void Matrix :: Create() {
 	if(begin == nullptr)
 		begin = new float* [n];
 	
-	cout << "1) Заполнить самому\n2) Заполнить случайным образом\n>>" << endl;
+	cout << "1) Заполнить самому\n2) Заполнить случайным образом\n>> ";
 	int x;
 	cin >> x;
 
@@ -233,9 +239,9 @@ Matrix& Matrix::operator=(Matrix& temp) {
 }
 
 void Matrix::ReadFile(char* S) {
-	if (sizeof(S) == 0) {
-		cout << "Вы не указали путь к файлу, возьмем file.txt" << endl;
-		S = (char*)"file.txt";
+	if (S[1] == '\0') {
+		cout << "Вы не указали путь к файлу, возьмем A.txt" << endl;
+		S = (char*)"A.txt";
 	}
 	ifstream f;
 	f.open(S);
@@ -249,7 +255,7 @@ void Matrix::ReadFile(char* S) {
 
 	cout << n << " " << m << endl;
 
-	float** begin = new float* [n];
+	float** begin = new float* [n + 1];
 	for (size_t i = 0; i < n; i++)
 	{
 		begin[i] = new float[m + 1];
@@ -261,10 +267,21 @@ void Matrix::ReadFile(char* S) {
 		begin[i][m] = NULL;
 		cout << endl;
 	}
+
+
 	begin[n] = new float[m + 1];
 	for (int i = 0; i <= m; i++) {
 		begin[n][i] = NULL;
 	}
 
+	for (size_t i = 0; i < n; i++) {
+		for (size_t j = 0; j < m; j++)
+		{
+			cout << "[" << begin[i][j] << "] ";
+		}
+		cout << endl;
+	}
+
 	f.close();
+	this->begin = begin;
 }
