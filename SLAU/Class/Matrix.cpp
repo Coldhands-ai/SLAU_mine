@@ -1,21 +1,21 @@
-#include "Massive.h"
+#include "Matrix.h"
 #include <iostream>
 #include <string>
 #include <fstream>
 
 using namespace std;
 
- Massive::Massive() {
+ Matrix::Matrix() {
 	begin = nullptr;
 	n = 0;
 	m = 0;
 }
 
- Massive::Massive(int n,int m) {
+ Matrix::Matrix(int n,int m) {
 	 Create(n, m);
  }
 
- Massive::Massive(float** temp,int n, int m) {
+ Matrix::Matrix(float *temp[], int n, int m) {
 	this->n = n;
 	this->m = m;
 	this->begin = new float * [this->n];
@@ -28,7 +28,7 @@ using namespace std;
 	}
 }
 
-Massive::Massive(const Massive& temp) {
+Matrix::Matrix(const Matrix& temp) {
 	this->n = temp.n;
 	this->m = temp.m;
 
@@ -42,7 +42,7 @@ Massive::Massive(const Massive& temp) {
 	}
 }
 
-Massive::~Massive(void){
+Matrix::~Matrix(void){
 	if (begin != nullptr) {
 		for (int i = 0; i < n; i++) {
 			delete begin[i];
@@ -51,7 +51,7 @@ Massive::~Massive(void){
 	}
 }
 
-void Massive :: Create() {
+void Matrix :: Create() {
 	cout << "1) Заполнить внутри класса\n\n2) Чтение из файла\nДругое значение - чтение из file.txt\n>>" << endl;
 	int x;
 	string a;
@@ -74,7 +74,7 @@ void Massive :: Create() {
 	}
 }
 
- void Massive::Create(int n, int m) {
+ void Matrix::Create(int n, int m) {
 	cout << "Заполнение массива\n";
 	if (n < 1 || m < 1)
 		throw "n|m < 1";
@@ -131,7 +131,7 @@ void Massive :: Create() {
 	}
 }
 
- void Massive::CreateNULL(int n, int m) {
+ void Matrix::CreateNULL(int n, int m) {
 	cout << "Заполнение массива\n";
 	if (n < 1 || m < 1)
 		throw "n|m < 1";
@@ -150,7 +150,7 @@ void Massive :: Create() {
 }
 
 
-void Massive::Show() {
+void Matrix::Show() {
 	cout << "Вывод массива\n";
 	for (int i = 0; i < n; i++)
 	{
@@ -162,12 +162,12 @@ void Massive::Show() {
 	}
 }
 
- Massive& Massive::operator*(Massive& temp) {
+ Matrix& Matrix::operator*(Matrix& temp) {
 	 cout << "[" << n << "][" << m << "] ? [" << temp.n << "][" << temp.m << "]" << endl;
 	if (this->m != temp.n) {
 		throw "m != temp.n";
 	}
-	Massive *A=new Massive();
+	Matrix *A=new Matrix();
 	A->CreateNULL(n, temp.m);
 	for (int i = 0; i < A->n; i++){
 		for (int j = 0; j < A->m; j++) {
@@ -180,7 +180,7 @@ void Massive::Show() {
 	return *A;
 }
 
-Massive& Massive::operator+(Massive& temp) {
+Matrix& Matrix::operator+(Matrix& temp) {
 	if (this->n != temp.n) {
 		cout << "n != temp.n" << endl;
 	}
@@ -188,7 +188,7 @@ Massive& Massive::operator+(Massive& temp) {
 		cout << "m != temp.m" << endl;
 	}
 
-	Massive *A=new Massive(*this);
+	Matrix *A=new Matrix(*this);
 	for (int i = 0; i < A->n; i++)
 	{
 		for (int j = 0; j < A->m; j++) {
@@ -198,7 +198,7 @@ Massive& Massive::operator+(Massive& temp) {
 	return *A;
 }
 
-Massive& Massive::operator-(Massive& temp) {
+Matrix& Matrix::operator-(Matrix& temp) {
 	if (this->n != temp.n) {
 		cout << "n != temp.n" << endl;
 	}
@@ -206,7 +206,7 @@ Massive& Massive::operator-(Massive& temp) {
 		cout << "m != temp.m" << endl;
 	}
 
-	Massive *A=new Massive(*this);
+	Matrix *A=new Matrix(*this);
 	for (int i = 0; i < A->n; i++)
 	{
 		for (int j = 0; j < A->m; j++) {
@@ -216,7 +216,7 @@ Massive& Massive::operator-(Massive& temp) {
 	return *A;
 }
 
-Massive& Massive::operator=(Massive& temp) {
+Matrix& Matrix::operator=(Matrix& temp) {
 	for (int i = 0; i < n; i++)
 		delete begin[i];
 	delete begin;
@@ -232,7 +232,7 @@ Massive& Massive::operator=(Massive& temp) {
 	return *this;
 }
 
-void Massive::ReadFile(char* S) {
+void Matrix::ReadFile(char* S) {
 	if (sizeof(S) == 0) {
 		cout << "Вы не указали путь к файлу, возьмем file.txt" << endl;
 		S = (char*)"file.txt";
