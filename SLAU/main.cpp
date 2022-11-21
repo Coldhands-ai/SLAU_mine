@@ -29,9 +29,17 @@ int main() {
 		cout << "r :" << endl;
 		r.Show(10);
 
-		cout << "det: " << A.GetDet();
-		cout << "A :" << endl;
-		A.Show();
+
+		cout << fixed;
+		cout.precision(6);
+		cout <<endl<< "det: " << A.GetDet()<<endl;
+
+		cout << "inverse: " << endl;
+		Matrix Inv = A.InverseGauss();
+		Inv.Show();
+
+		cout << "A*A^(-1) :"<<endl;
+		(A * Inv).Show(6);
 	}
 	/*catch (char* a) {
 		cout << "Error: " << a << endl;

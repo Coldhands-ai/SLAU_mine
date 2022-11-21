@@ -33,6 +33,25 @@ Matrix::Matrix(const Matrix& temp) {
 	}
 }
 
+Matrix::Matrix(float** temp, int n, int m)
+{
+	this->n = n;
+	this->m = m;
+	this->det = 0;
+	this->permut = 0;
+	begin = new float* [n];
+	for (size_t i = 0; i < n; i++)
+	{
+		begin[i] = new float[m];
+
+		for (size_t j = 0; j < m; j++)
+		{
+			begin[i][j] = temp[i][j];
+		}
+	}
+	this->begin = begin;
+}
+
 Matrix::~Matrix(void){
 	if (begin != nullptr) {
 		for (int i = 0; i < n; i++) {
@@ -42,7 +61,7 @@ Matrix::~Matrix(void){
 	}
 }
 
-int Matrix::GetDet()
+float Matrix::GetDet()
 {
 	return det;
 }
@@ -77,7 +96,7 @@ void Matrix::Create(char* S) {
 }
 
  void Matrix::Create(int n, int m) {
-	cout << "Заполнение массива\n";
+	//cout << "Заполнение массива\n";
 	if (n < 1 || m < 1)
 		throw "n|m < 1";
 	this->n = n;
@@ -134,7 +153,7 @@ void Matrix::Create(char* S) {
 }
 
  void Matrix::CreateNULL(int n, int m) {
-	cout << "Заполнение массива\n";
+	//cout << "Заполнение массива\n";
 	if (n < 1 || m < 1)
 		throw "n|m < 1";
 	this->n = n;
@@ -147,6 +166,26 @@ void Matrix::Create(char* S) {
 		for (int j = 0; j < m; j++)
 		{
 			begin[i][j]=0;
+		}
+	}
+}
+ 
+ void Matrix::CreateDiagonal(int n) {
+	//cout << "Заполнение массива\n";
+	if (n < 1)
+		throw "n< 1";
+	this->n = n;
+	this->m = n;
+	if (begin == nullptr)
+		begin = new float* [n];
+	for (int i = 0; i < n; i++)
+	{
+		begin[i] = new float[m];
+		for (int j = 0; j < m; j++)
+		{
+			if (i == j) begin[i][j] = 1;
+			else
+				begin[i][j]=0;
 		}
 	}
 }
@@ -165,7 +204,7 @@ void Matrix::Show(int x) {
 	{
 		for (int j = 0; j < m; j++)
 		{
-			cout << "[" << begin[i][j] << "]";
+			cout << "[" << begin[i][j] << "]\t";
 		}
 		cout << endl;
 	}
@@ -254,6 +293,48 @@ void Matrix::Show(int x) {
 	 }
 	 det = pow(-1, permut) * value_det;
 	 return *X;
+ }
+
+ Matrix& Matrix::InverseGauss()
+ {
+	 if (n != m) throw "Inverse n!=m";
+	 Matrix temp;
+	 //cout << "temp diag: " << endl;
+	 temp.CreateDiagonal(n);
+	 //temp.Show();
+	 Matrix* R=nullptr;
+	 Matrix X;
+	 Matrix* Y=new Matrix();
+	 Y->CreateNULL(n, n);
+
+	 float** A1 = nullptr;
+
+	 for (size_t i1 = 0; i1 < n; i1++)
+	 {
+		 if (A1 != nullptr) {
+			 for (size_t i = 0; i < n; i++)
+			 {
+				 delete A1[i];
+			 }
+			 delete A1;
+			 A1 = nullptr;
+		 }
+		 
+		 A1 = new float* [temp.n];
+		 for (size_t i = 0; i < n; i++)
+		 {
+			 A1[i] = new float[1];
+			 A1[i][0] = temp.begin[i1][i];
+		 }
+		 R = new Matrix(A1, n, 1);
+		 X=MethodGauss(*R); // Нахождение i1-й колонки
+		 delete R;
+		 for (size_t i = 0; i < n; i++)
+		 {
+			 Y->begin[i][i1] = X.begin[i][0];
+		 }
+	 }
+	 return *Y;
  }
 
 Matrix& Matrix::operator+(Matrix& temp) {
