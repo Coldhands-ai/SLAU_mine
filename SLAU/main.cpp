@@ -21,25 +21,25 @@ int main() {
 
 	try {
 		// 1
-		Matrix X = A.MethodGauss(f);
+		Matrix X = A.MethodGauss_byrow(f); // Ax=f
 		cout << "X :" << endl;
 		X.Show();
+
 		// 2
 		Matrix r = A * X - f;
 		cout << "r :" << endl;
 		r.Show(10);
-
 
 		cout << fixed;
 		cout.precision(6);
 		cout <<endl<< "det: " << A.GetDet()<<endl;
 
 		cout << "inverse: " << endl;
-		Matrix Inv = A.InverseGauss();
-		Inv.Show();
+		Matrix A_ = A.InverseGauss();
+		A_.Show();
 
 		cout << "A*A^(-1) :"<<endl;
-		(A * Inv).Show(6);
+		(A * A_).Show(6);
 	}
 	/*catch (char* a) {
 		cout << "Error: " << a << endl;

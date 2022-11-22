@@ -228,11 +228,11 @@ void Matrix::Show(int x) {
 	return *A;
 }
 
- Matrix& Matrix::MethodGauss(Matrix& right)
+ Matrix& Matrix::MethodGauss_bycolumn(Matrix& rightTemp)
  {
-	 if (n != m || right.m!=1)
+	 if (n != m || rightTemp.m!=1)
 		 throw"n!=m  || right.m!=1";
-
+	 Matrix right = rightTemp;
 	 Matrix temp(*this);
 	 // Создаем решение СЛАУ
 	 Matrix *X = new Matrix();
@@ -241,26 +241,92 @@ void Matrix::Show(int x) {
 
 	 for (int i = 0; i < n; ++i) {
 		 // Инициализация главного элемента. Изначально он находится в матрице А с индексами [0][0]
-		 double main_element = temp.begin[i][i];
-		 int index_main_element = i;
+		 double MainEl = temp.begin[i][i];
+		 int iMainEl = i;
 
 		 // Поиск индекса главного элемента
 		 for (int j = i; j < n; ++j) {
 			 // Если следующий элемент в строке по модулю больше, чем текущий главный элемент, то обновляем его
-			 if (abs(main_element) < abs(temp.begin[i][j])) {
-				 main_element = temp.begin[i][j];
-				 index_main_element = j;
+			 if (abs(MainEl) < abs(temp.begin[i][j])) {
+				 MainEl = temp.begin[i][j];
+				 iMainEl = j;
 			 }
 		 }
 		 // Если главный элемент стоит на главной диагонали, то ничего не меняем местами, а сразу делаем итерацию методом Гаусса
-		 if (index_main_element != i) {
+		 if (iMainEl != i) {
 			 // Увеличиваем количество перестановок
 			 permut++;
 			 // Меняем строки матрицы А местами
 			 for (int k = 0; k < n; ++k) {
 				 a12 = temp.begin[k][i];
-				 temp.begin[k][i] = temp.begin[k][index_main_element];
-				 temp.begin[k][index_main_element]=a12;
+				 temp.begin[k][i] = temp.begin[k][iMainEl];
+				 temp.begin[k][iMainEl]=a12;
+			 }
+		 }
+
+		 // Элементарные преобразования. Прямой ход метода Гаусса
+		 for (int k = i + 1; k < n; ++k) {
+			 double coeff_multiply = -(temp.begin[k][i] / temp.begin[i][i]);
+			 right.begin[k][0] += coeff_multiply * right.begin[i][0];
+			 for (int j = 0; j < n; ++j) {
+				 temp.begin[k][j] += coeff_multiply * temp.begin[i][j];
+			 }
+		 }
+	 }
+
+	 // Нахождение решения 'x' системы линейных алгебраических уравнений Ax=f
+	 for (int i = n - 1; i >= 0; --i) {
+		 float coeff_multiply = 0.0;
+		 for (int j = i; j < n; ++j) {
+			 coeff_multiply += temp.begin[i][j] * X->begin[j][0];
+			 X->begin[i][0] = (right.begin[i][0] - coeff_multiply) / temp.begin[i][i];
+		 }
+	 }
+
+	 //                    ***** 3 Задание *****
+	 // Задание 3. Нахождение определителя матрицы методом Гаусса
+	 double value_det = temp.begin[0][0];
+	 // Так как матрица у нас верхнетреугольная, после преобразований.
+	 // То определитель равен произведению всех диагональных элементов матрицы, с учетом перестановок
+	 for (int i = 1; i < n; ++i) {
+		 value_det *= temp.begin[i][i];
+	 }
+	 det = pow(-1, permut) * value_det;
+	 return *X;
+ }
+ Matrix& Matrix::MethodGauss_byrow(Matrix& rightTemp)
+ {
+	 if (n != m || rightTemp.m != 1)
+		 throw"n!=m  || right.m!=1";
+	 Matrix right = rightTemp;
+	 Matrix temp(*this);
+	 // Создаем решение СЛАУ
+	 Matrix* X = new Matrix();
+	 X->CreateNULL(n, 1);
+	 float a12 = 0;
+
+	 for (int i = 0; i < n; ++i) {
+		 // Инициализация главного элемента. Изначально он находится в матрице А с индексами [0][0]
+		 double MainEl = temp.begin[i][i];
+		 int iMainEl = i;
+
+		 // Поиск индекса главного элемента
+		 for (int j = i; j < n; ++j) {
+			 // Если следующий элемент в строке по модулю больше, чем текущий главный элемент, то обновляем его
+			 if (abs(MainEl) < abs(temp.begin[i][j])) {
+				 MainEl = temp.begin[i][j];
+				 iMainEl = j;
+			 }
+		 }
+		 // Если главный элемент стоит на главной диагонали, то ничего не меняем местами, а сразу делаем итерацию методом Гаусса
+		 if (iMainEl != i) {
+			 // Увеличиваем количество перестановок
+			 permut++;
+			 // Меняем строки матрицы А местами
+			 for (int k = 0; k < n; ++k) {
+				 a12 = temp.begin[k][i];
+				 temp.begin[k][i] = temp.begin[k][iMainEl];
+				 temp.begin[k][iMainEl]=a12;
 			 }
 		 }
 
@@ -327,7 +393,7 @@ void Matrix::Show(int x) {
 			 A1[i][0] = temp.begin[i1][i];
 		 }
 		 R = new Matrix(A1, n, 1);
-		 X=MethodGauss(*R); // Нахождение i1-й колонки
+		 X=MethodGauss_byrow(*R); // Нахождение i1-й колонки
 		 delete R;
 		 for (size_t i = 0; i < n; i++)
 		 {

@@ -25,7 +25,8 @@ public:
 	Matrix& operator-(Matrix& temp);
 	Matrix& operator=(Matrix& temp);
 	Matrix& operator*(Matrix& temp);
-	Matrix& MethodGauss(Matrix& right);
+	Matrix& MethodGauss_byrow(Matrix&);
+	Matrix& MethodGauss_bycolumn(Matrix&);
 	Matrix& InverseGauss();
 };
 
