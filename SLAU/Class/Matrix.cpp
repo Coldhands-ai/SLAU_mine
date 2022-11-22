@@ -235,65 +235,86 @@ void Matrix::Show(int x) {
 	 Matrix right = rightTemp;
 	 Matrix temp(*this);
 	 // Создаем решение СЛАУ
-	 Matrix *X = new Matrix();
-	 X->CreateNULL(n,1);
 	 float a12 = 0;
 
-	 for (int i = 0; i < n; ++i) {
+	 for (int i = 0; i < n-1; ++i) {
 		 // Инициализация главного элемента. Изначально он находится в матрице А с индексами [0][0]
-		 double MainEl = temp.begin[i][i];
-		 int iMainEl = i;
+		 double MaxEl = temp.begin[i][i];
+		 int iMaxEl = i;
 
 		 // Поиск индекса главного элемента
-		 for (int j = i; j < n; ++j) {
+		 for (int j = 0; j < n-i; ++j) {
 			 // Если следующий элемент в строке по модулю больше, чем текущий главный элемент, то обновляем его
-			 if (abs(MainEl) < abs(temp.begin[i][j])) {
-				 MainEl = temp.begin[i][j];
-				 iMainEl = j;
+			 if (abs(MaxEl) < abs(temp.begin[j+i][i])) {
+				 MaxEl = temp.begin[j+i][i];
+				 iMaxEl = j+i;
 			 }
 		 }
-		 // Если главный элемент стоит на главной диагонали, то ничего не меняем местами, а сразу делаем итерацию методом Гаусса
-		 if (iMainEl != i) {
-			 // Увеличиваем количество перестановок
-			 permut++;
-			 // Меняем строки матрицы А местами
-			 for (int k = 0; k < n; ++k) {
-				 a12 = temp.begin[k][i];
-				 temp.begin[k][i] = temp.begin[k][iMainEl];
-				 temp.begin[k][iMainEl]=a12;
+		 // Меняем 1 строку на строку с главным элементом в обоих матрицах
+		 if (iMaxEl != i) {
+			 for (size_t j = 0; j < n; j++)
+			 {
+				 a12 = temp.begin[i][j];
+				 temp.begin[i][j] = temp.begin[iMaxEl][j];
+				 temp.begin[iMaxEl][j] = a12;
 			 }
+			 a12 = right.begin[i][0];
+			 right.begin[i][0] = right.begin[iMaxEl][0];
+			 right.begin[iMaxEl][0] = a12;
 		 }
 
-		 // Элементарные преобразования. Прямой ход метода Гаусса
-		 for (int k = i + 1; k < n; ++k) {
-			 double coeff_multiply = -(temp.begin[k][i] / temp.begin[i][i]);
-			 right.begin[k][0] += coeff_multiply * right.begin[i][0];
-			 for (int j = 0; j < n; ++j) {
-				 temp.begin[k][j] += coeff_multiply * temp.begin[i][j];
+
+		 cout << endl << endl;
+		 temp.Show();
+
+		 // Делим строку на главный элемент
+		 // Проверяем, не является ли 2 матрица вектором
+		 
+		 right.begin[i][0] /= temp.begin[i][i];
+		 
+		 for (size_t j = i; j < n; j++)
+		 {
+			 temp.begin[i][j] /= temp.begin[i][i];
+		 }
+
+		 // Приводим к верхне-угольной матрице матрицу A
+		 if (i != n - 1) {
+
+			 for (size_t j = i+1; j < n; j++)
+			 {
+				 right.begin[j][0] -= temp.begin[i][i]*right.begin[i][0];
+				 for (size_t j2 = i; j2 < n; j2++)
+				 {
+					 temp.begin[j][j2] -= temp.begin[i][j2] * temp.begin[j][j2];
+				 }
 			 }
 		 }
+		 cout << endl << endl;
+		 temp.Show();
+
 	 }
 
 	 // Нахождение решения 'x' системы линейных алгебраических уравнений Ax=f
-	 for (int i = n - 1; i >= 0; --i) {
-		 float coeff_multiply = 0.0;
-		 for (int j = i; j < n; ++j) {
-			 coeff_multiply += temp.begin[i][j] * X->begin[j][0];
-			 X->begin[i][0] = (right.begin[i][0] - coeff_multiply) / temp.begin[i][i];
-		 }
-	 }
+	 //for (int i = n - 1; i >= 0; --i) {
+		// float coeff_multiply = 0.0;
+		// for (int j = i; j < n; ++j) {
+		//	 coeff_multiply += temp.begin[i][j] * X->begin[j][0];
+		//	 X->begin[i][0] = (right.begin[i][0] - coeff_multiply) / temp.begin[i][i];
+		// }
+	 //}
 
-	 //                    ***** 3 Задание *****
-	 // Задание 3. Нахождение определителя матрицы методом Гаусса
-	 double value_det = temp.begin[0][0];
-	 // Так как матрица у нас верхнетреугольная, после преобразований.
-	 // То определитель равен произведению всех диагональных элементов матрицы, с учетом перестановок
-	 for (int i = 1; i < n; ++i) {
-		 value_det *= temp.begin[i][i];
-	 }
-	 det = pow(-1, permut) * value_det;
-	 return *X;
+	 ////                    ***** 3 Задание *****
+	 //// Задание 3. Нахождение определителя матрицы методом Гаусса
+	 //double value_det = temp.begin[0][0];
+	 //// Так как матрица у нас верхнетреугольная, после преобразований.
+	 //// То определитель равен произведению всех диагональных элементов матрицы, с учетом перестановок
+	 //for (int i = 1; i < n; ++i) {
+		// value_det *= temp.begin[i][i];
+	 //}
+	 //det = pow(-1, permut) * value_det;
+	 //return *X;
  }
+
  Matrix& Matrix::MethodGauss_byrow(Matrix& rightTemp)
  {
 	 if (n != m || rightTemp.m != 1)
