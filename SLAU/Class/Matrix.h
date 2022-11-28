@@ -21,12 +21,17 @@ public:
 	void Show();
 	void Show(int);
 	void ReadFile(char*);
+	Matrix& Transp(void);
 	Matrix& operator+(Matrix& temp);
 	Matrix& operator-(Matrix& temp);
 	Matrix& operator=(Matrix& temp);
 	Matrix& operator*(Matrix& temp);
+	bool operator==(Matrix& temp);
+	bool operator!=(Matrix& temp);
 	Matrix& MethodGauss_byrow(Matrix&);
 	Matrix& MethodGauss_bycolumn(Matrix&);
 	Matrix& InverseGauss();
+	Matrix& MethodHoleckogo(Matrix&);
+	void Okrugl(void);
 };
 

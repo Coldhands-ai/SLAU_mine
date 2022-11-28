@@ -19,7 +19,7 @@ int main() {
 	//A.Show();
 	//B.Show();
 
-	try {
+	/*try { // Метод Гаусса по столбцу
 		// 1
 		Matrix X = A.MethodGauss_bycolumn(f); // Ax=f
 		cout << "X :" << endl;
@@ -41,13 +41,27 @@ int main() {
 		cout << "A*A^(-1) :"<<endl;
 		(A * A_).Show(6);
 	}
-	/*catch (char* a) {
-		cout << "Error: " << a << endl;
+	catch (...) {
+		cout << "Error" << endl;
 	}*/
+
+	try { // Метод Холецкого
+		Matrix X1 = A.MethodGauss_bycolumn(f);
+		Matrix X2 = A.MethodHoleckogo(f);
+		cout << "MethodGauss: " << endl;
+		X1.Show();
+		cout << "MethodHoleckogo: " << endl;
+		X2.Show();
+		cout << "MethodGauss =? MethodHoleckogo: " << (X1 == X2) << endl;
+
+		cout << "Nevyazka:" << endl;
+		Matrix r = A * X2 - f;
+		cout << "r :" << endl;
+		r.Show(10);
+	}
 	catch (...) {
 		cout << "Error" << endl;
 	}
-
 
 	//try {
 	//	// 1

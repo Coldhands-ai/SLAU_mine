@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <cmath>
 
 using namespace std;
 
@@ -227,6 +228,29 @@ void Matrix::Show(int x) {
 	}
 	return *A;
 }
+
+ bool Matrix::operator==(Matrix& temp)
+ {
+	 if (n != temp.n || m != temp.m)
+		 throw "Length";
+
+	 for (size_t i = 0; i < n; i++)
+	 {
+		 for (size_t j = 0; j < m; j++)
+		 {
+			 if (begin[i][j] != temp.begin[i][j]) return false;
+		 }
+	 }
+	 return true;
+	 // TODO: вставьте здесь оператор return
+ }
+
+ bool Matrix::operator!=(Matrix& temp)
+ {
+	 if (temp == *this)
+		 return false;
+	 else return true;
+ }
 
  Matrix& Matrix::MethodGauss_byrow(Matrix& rightTemp)
  {
@@ -473,6 +497,66 @@ void Matrix::Show(int x) {
 	 return *Y;
  }
 
+ Matrix& Matrix::MethodHoleckogo(Matrix& right)
+ {
+	 Matrix A = *this;
+	 if (*this != A.Transp()) {
+		 cout<<"MethodHoleckogo: Transp '!='\n";
+		 return *this;
+	 }
+	 Matrix L;
+	 L.CreateNULL(n, m);
+	 Matrix *LT;
+	 Matrix b = right;
+	 Matrix y;
+	 y.CreateNULL(b.n, b.m);
+	 Matrix* x;
+	 x = new Matrix(y);
+
+	 for (size_t i = 0; i < n; i++)
+	 {
+		 L.begin[i][i] = A.begin[i][i]; // Беру a[i][i]
+
+		 for (size_t j = 0; j < i; j++)
+		 {
+			 L.begin[i][i] -= pow(L.begin[i][j],2); // Отнимаю элементы слева от l[i][i]
+		 }
+
+		 L.begin[i][i] = sqrt(L.begin[i][i]); // беру под корень
+
+		 for (size_t j = i+1; j < n; j++) // Ухожу вниз
+		 {
+			 L.begin[j][i] = A.begin[j][i]; 
+
+			 for (size_t ij = 0; ij < i; ij++)
+			 {
+				 L.begin[j][i] -= L.begin[j][ij] * L.begin[i][ij];
+			 }
+			 L.begin[j][i] /= L.begin[i][i];
+		 }
+	 }
+
+	 LT = new Matrix(L);
+	 LT->Transp();
+
+	 y=L.MethodGauss_bycolumn(b);
+	 *x = LT->MethodGauss_bycolumn(y);
+
+	 return *x;
+	 // TODO: вставьте здесь оператор return
+ }
+
+ void Matrix::Okrugl(void)
+ {
+	 for (size_t i = 0; i < n; i++)
+	 {
+		 for (size_t j = 0; j < m; j++)
+		 {
+			 begin[i][j] = floor(begin[i][j]+0.05);
+		 }
+	 }
+ }
+
 Matrix& Matrix::operator+(Matrix& temp) {
 	if (this->n != temp.n) {
 		cout << "n != temp.n" << endl;
@@ -565,4 +649,23 @@ void Matrix::ReadFile(char* S) {
 
 	f.close();
 	this->begin = begin;
+}
+
+Matrix& Matrix::Transp(void)
+{
+	float** newbegin = new float* [m];
+	
+	for (int i = 0; i < m; i++) {
+		newbegin[i] = new float[n];
+		for (int j = 0; j < n; j++) {
+			newbegin[i][j] = begin[j][i];
+		}
+	}
+
+	for (int i = 0; i < n; i++)
+		delete begin[i];
+	delete begin;
+
+	begin = newbegin;
+	return *this;
 }
