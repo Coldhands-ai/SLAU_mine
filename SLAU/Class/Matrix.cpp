@@ -232,6 +232,12 @@ void Matrix::Show(int x) {
  {
 	 if (n != m || rightTemp.m!=1)
 		 throw"n!=m  || right.m!=1";
+	 Matrix ite;
+	 ite.CreateNULL(n, 1);
+	 for (size_t i = 0; i < n; i++)
+	 {
+		 ite.begin[i][0] = i;
+	 }
 	 Matrix right = rightTemp;
 	 Matrix temp(*this);
 	 // Создаем решение СЛАУ
@@ -261,6 +267,10 @@ void Matrix::Show(int x) {
 			 a12 = right.begin[i][0];
 			 right.begin[i][0] = right.begin[iMaxEl][0];
 			 right.begin[iMaxEl][0] = a12;
+			 
+			 a12 = ite.begin[i][0];
+			 ite.begin[i][0] = ite.begin[iMaxEl][0];
+			 ite.begin[iMaxEl][0] = a12;
 		 }
 
 
@@ -319,6 +329,11 @@ void Matrix::Show(int x) {
  {
 	 if (n != m || rightTemp.m != 1)
 		 throw"n!=m  || right.m!=1";
+	 int* ite = new int[n]; // Чтобы знать новый порядок строк, например x2+x5+x1 ...
+	 for (size_t i = 0; i < n; i++)
+	 {
+		 ite[i] = i;
+	 }
 	 Matrix right = rightTemp;
 	 Matrix temp(*this);
 	 // Создаем решение СЛАУ
@@ -351,7 +366,13 @@ void Matrix::Show(int x) {
 				 temp.begin[k][i] = temp.begin[k][iMainEl];
 				 temp.begin[k][iMainEl]=a12;
 			 }
+			 a12 = ite[i];
+			 ite[i] = ite[iMainEl];
+			 ite[iMainEl] = a12;
 		 }
+		/* cout << "iM: " << iMainEl << ", i: " << i << endl;
+		 cout << "temp:\n";
+		 temp.Show();*/
 
 		 // Элементарные преобразования. Прямой ход метода Гаусса
 		 for (int k = i + 1; k < n; ++k) {
@@ -361,6 +382,13 @@ void Matrix::Show(int x) {
 				 temp.begin[k][j] += coeff_multiply * temp.begin[i][j];
 			 }
 		 }
+
+
+		 /*cout << "temp: \n";
+		 temp.Show();*/
+
+		 /*cout << "right: \n";
+		 right.Show();*/
 	 }
 
 	 // Нахождение решения 'x' системы линейных алгебраических уравнений Ax=f
@@ -371,14 +399,31 @@ void Matrix::Show(int x) {
 		 }
 		 X->begin[i][0] = (right.begin[i][0] - coeff_multiply) / temp.begin[i][i];
 	 }
-	 a12=X->begin[1][0];
+	 /*a12=X->begin[1][0];
 	 X->begin[1][0]= X->begin[2][0];
-	 X->begin[2][0] = a12;
+	 X->begin[2][0] = a12;*/
 
 	 // Задание 3. Нахождение определителя матрицы методом Гаусса
 	 double value_det = temp.begin[0][0];
 	 // Так как матрица у нас верхнетреугольная, после преобразований.
 	 // То определитель равен произведению всех диагональных элементов матрицы, с учетом перестановок
+	 
+	 int a13 = 0;
+	 
+	 // Мы меняли местами x1,x2 ..., теперь вернем порядок
+	 for (size_t i = 0; i < 6; i++)
+	 {
+		 if (ite[i] != i) {
+			 a12 = X->begin[i][0];
+			 X->begin[i][0] = X->begin[ite[i]][0];
+			 X->begin[ite[i]][0] = a12;
+
+			 a13 = ite[ite[i]];
+			 ite[ite[i]] = ite[i];
+			 ite[i] = a13;
+		 }
+	 }
+
 	 for (int i = 1; i < n; ++i) {
 		 value_det *= temp.begin[i][i];
 	 }
