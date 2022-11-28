@@ -325,6 +325,8 @@ void Matrix::Show(int x) {
 	 Matrix* X = new Matrix();
 	 X->CreateNULL(n, 1);
 	 float a12 = 0;
+	 double MainEl;
+	 int iMainEl;
 
 	 for (int i = 0; i < n; ++i) {
 		 // Инициализация главного элемента. Изначально он находится в матрице А с индексами [0][0]
@@ -366,11 +368,13 @@ void Matrix::Show(int x) {
 		 float coeff_multiply = 0.0;
 		 for (int j = i; j < n; ++j) {
 			 coeff_multiply += temp.begin[i][j] * X->begin[j][0];
-			 X->begin[i][0] = (right.begin[i][0] - coeff_multiply) / temp.begin[i][i];
 		 }
+		 X->begin[i][0] = (right.begin[i][0] - coeff_multiply) / temp.begin[i][i];
 	 }
+	 a12=X->begin[1][0];
+	 X->begin[1][0]= X->begin[2][0];
+	 X->begin[2][0] = a12;
 
-	 //                    ***** 3 Задание *****
 	 // Задание 3. Нахождение определителя матрицы методом Гаусса
 	 double value_det = temp.begin[0][0];
 	 // Так как матрица у нас верхнетреугольная, после преобразований.
