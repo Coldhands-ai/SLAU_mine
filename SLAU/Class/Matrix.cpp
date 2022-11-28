@@ -228,7 +228,7 @@ void Matrix::Show(int x) {
 	return *A;
 }
 
- Matrix& Matrix::MethodGauss_bycolumn(Matrix& rightTemp)
+ Matrix& Matrix::MethodGauss_byrow(Matrix& rightTemp)
  {
 	 if (n != m || rightTemp.m!=1)
 		 throw"n!=m  || right.m!=1";
@@ -274,8 +274,8 @@ void Matrix::Show(int x) {
 		 }
 
 
-		 cout << endl << endl;
-		 temp.Show();
+		 /*cout << endl << endl;
+		 temp.Show();*/
 
 		 // Делим строку на главный элемент
 		 // Проверяем, не является ли 2 матрица вектором
@@ -325,7 +325,7 @@ void Matrix::Show(int x) {
 	 //return *X;
  }
 
- Matrix& Matrix::MethodGauss_byrow(Matrix& rightTemp)
+ Matrix& Matrix::MethodGauss_bycolumn(Matrix& rightTemp)
  {
 	 if (n != m || rightTemp.m != 1)
 		 throw"n!=m  || right.m!=1";
@@ -411,7 +411,7 @@ void Matrix::Show(int x) {
 	 int a13 = 0;
 	 
 	 // Мы меняли местами x1,x2 ..., теперь вернем порядок
-	 for (size_t i = 0; i < 6; i++)
+	 for (size_t i = 0; i < n; i++)
 	 {
 		 if (ite[i] != i) {
 			 a12 = X->begin[i][0];
@@ -463,7 +463,7 @@ void Matrix::Show(int x) {
 			 A1[i][0] = temp.begin[i1][i];
 		 }
 		 R = new Matrix(A1, n, 1);
-		 X=MethodGauss_byrow(*R); // Нахождение i1-й колонки
+		 X=MethodGauss_bycolumn(*R); // Нахождение i1-й колонки
 		 delete R;
 		 for (size_t i = 0; i < n; i++)
 		 {
