@@ -383,6 +383,7 @@ void Matrix::Show(int x) {
 	 double MainEl;
 	 int iMainEl;
 
+
 	 for (int i = 0; i < n; ++i) {
 		 // Инициализация главного элемента. Изначально он находится в матрице А с индексами [0][0]
 		 MainEl = temp.begin[i][i];
@@ -409,6 +410,11 @@ void Matrix::Show(int x) {
 			 a12 = ite[i];
 			 ite[i] = ite[iMainEl];
 			 ite[iMainEl] = a12;
+			 cout << "ite: ";
+			 for (size_t i = 0; i < n; i++)
+			 {
+				 cout << ite[i] << " ";
+			 }cout << endl;
 		 }
 		/* cout << "iM: " << iMainEl << ", i: " << i << endl;
 		 cout << "temp:\n";
@@ -451,16 +457,29 @@ void Matrix::Show(int x) {
 	 int a13 = 0;
 	 
 	 // Мы меняли местами x1,x2 ..., теперь вернем порядок
-	 for (size_t i = 0; i < n; i++)
-	 {
-		 if (ite[i] != i) {
-			 a12 = X->begin[i][0];
-			 X->begin[i][0] = X->begin[ite[i]][0];
-			 X->begin[ite[i]][0] = a12;
+	 bool bl1 = false;
+	 while (true) {
+		 bl1 = false;
+		 for (size_t i = 0; i < n - 1; i++)
+		 {
+			 if (ite[i] > ite[i + 1]) bl1 = true;
+		 }
+		 if (bl1) {
+			 for (size_t i = 0; i < n; i++)
+			 {
+				 if (ite[i] != i) {
+					 a12 = X->begin[i][0];
+					 X->begin[i][0] = X->begin[ite[i]][0];
+					 X->begin[ite[i]][0] = a12;
 
-			 a13 = ite[ite[i]];
-			 ite[ite[i]] = ite[i];
-			 ite[i] = a13;
+					 a13 = ite[ite[i]];
+					 ite[ite[i]] = ite[i];
+					 ite[i] = a13;
+				 }
+			 }
+		 }
+		 else {
+			 break;
 		 }
 	 }
 
