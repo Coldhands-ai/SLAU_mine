@@ -6,6 +6,8 @@ class Matrix
 	int n, m;
 	int permut;
 	float det;
+	float norma;
+	int countiterationnorm;
 public:
 	Matrix();
 	Matrix(int, int);
@@ -32,6 +34,11 @@ public:
 	Matrix& MethodGauss_bycolumn(Matrix&);
 	Matrix& InverseGauss();
 	Matrix& MethodHoleckogo(Matrix&);
-	void Okrugl(void);
+	Matrix& MethodYakobi(Matrix&, Matrix&,const float);
+	Matrix& Integer(void);
+	Matrix& Okrugl(void);
+	int Norma(void);
+	float GetNorm(void);
+	int GetCountIterationNorm(void);
 };
 

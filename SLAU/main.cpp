@@ -10,6 +10,7 @@ int main() {
 	setlocale(LC_ALL, "rus");
 	Matrix A;
 	A.Create((char*)"A.txt");
+	Matrix* AT=nullptr;
 	cout << "A : " << endl;
 	A.Show();
 	Matrix f;
@@ -55,9 +56,34 @@ int main() {
 		cout << "MethodGauss =? MethodHoleckogo: " << (X1 == X2) << endl;
 
 		cout << "Nevyazka:" << endl;
-		Matrix r = A * X2 - f;
+		Matrix rMG = A * X2 - f;
 		cout << "r :" << endl;
-		r.Show(10);
+		rMG.Show(10);
+
+		cout << "MethodYakobi: " << endl;
+		cout << "int X: " << endl;
+		X2 = X2.Okrugl();
+		X2.Show(10);
+		Matrix MY = A.MethodYakobi(f, X2, 0.000001);
+		cout << "MY: " << endl;
+		MY.Show(10);
+
+		cout << "Nevyazka:" << endl;
+		Matrix rMY = A * X2 - f;
+		rMY.Show(10);
+
+		AT = &(A.InverseGauss());
+
+		cout << "NormaYakobi: \n";
+		cout << fixed;
+		cout.precision(20);
+		cout<< A.GetNorm() <<" countIteration: "<<A.GetCountIterationNorm()<< endl;
+		AT->MethodYakobi(f, X2,0.000001);
+		cout << AT->GetNorm() << " countIteration: " << AT->GetCountIterationNorm()<< endl;
+		cout << "M(A) = " << A.GetNorm() * AT->GetNorm() << endl;
+		//cout << "Norma: " << A.Norma() << endl;
+
+		
 	}
 	catch (...) {
 		cout << "Error" << endl;

@@ -12,9 +12,19 @@ using namespace std;
 	m = 0;
 	permut = 0;
 	det = 1;
+	norma = -1;
+	countiterationnorm = 0;
 }
 
  Matrix::Matrix(int n,int m) {
+	 begin = nullptr;
+	 n = 0;
+	 m = 0;
+	 permut = 0;
+	 det = 1;
+	 norma = -1;
+	 countiterationnorm = 0;
+
 	 Create(n, m);
  }
 
@@ -25,6 +35,8 @@ Matrix::Matrix(const Matrix& temp) {
 	this->det = temp.det;
 	this->permut = temp.permut;
 	this->begin = new float * [this->n];
+	this->norma = temp.norma;
+	this->countiterationnorm = temp.countiterationnorm;
 
 	for (int i = 0; i < this->n; i++) {
 		this->begin[i] = new float [this->m] ;
@@ -40,6 +52,10 @@ Matrix::Matrix(float** temp, int n, int m)
 	this->m = m;
 	this->det = 0;
 	this->permut = 0;
+	this->norma = -1;
+	this->countiterationnorm = 0;
+
+
 	begin = new float* [n];
 	for (size_t i = 0; i < n; i++)
 	{
@@ -369,8 +385,8 @@ void Matrix::Show(int x) {
 
 	 for (int i = 0; i < n; ++i) {
 		 // Инициализация главного элемента. Изначально он находится в матрице А с индексами [0][0]
-		 double MainEl = temp.begin[i][i];
-		 int iMainEl = i;
+		 MainEl = temp.begin[i][i];
+		 iMainEl = i;
 
 		 // Поиск индекса главного элемента
 		 for (int j = i; j < n; ++j) {
@@ -546,8 +562,50 @@ void Matrix::Show(int x) {
 	 // TODO: вставьте здесь оператор return
  }
 
- void Matrix::Okrugl(void)
+ Matrix& Matrix::MethodYakobi(Matrix&F, Matrix&x,const float eps)
  {
+	 Matrix TempX;
+	 TempX.CreateNULL(n, 1);
+	 Matrix* y = new Matrix(x);
+	 
+	 float norm=0;
+	 countiterationnorm=0;
+
+	 do {
+		 countiterationnorm++;
+		 for (int i = 0; i < n; i++) {
+			 TempX.begin[i][0] = F.begin[i][0];
+			 for (int g = 0; g < n; g++) {
+				 if (i != g)
+					 TempX.begin[i][0] -= begin[i][g] * y->begin[g][0];
+			 }
+			 TempX.begin[i][0] /= begin[i][i];
+		 }
+		 norm = fabs(y->begin[0][0] - TempX.begin[0][0]);
+		 for (int h = 0; h < n; h++) {
+			 if (fabs(y->begin[h][0] - TempX.begin[h][0]) > norm)
+				 norm = fabs(y->begin[h][0] - TempX.begin[h][0]);
+			 y->begin[h][0] = TempX.begin[h][0];
+		 }
+	 } while (norm > eps);
+	 this->norma = norm;
+	 return *y;
+	 // TODO: вставьте здесь оператор return
+ }
+
+ Matrix& Matrix::Integer(void)
+ {
+	 Matrix* X = new Matrix(*this);
+	 for (size_t i = 0; i < n; i++)
+	 {
+		 X->begin[i][0] = (int)(X->begin[i][0]);
+	 }
+	 return *X;
+ }
+
+ Matrix& Matrix::Okrugl(void)
+ {
+	 Matrix* X = new Matrix(*this);
 	 for (size_t i = 0; i < n; i++)
 	 {
 		 for (size_t j = 0; j < m; j++)
@@ -555,6 +613,34 @@ void Matrix::Show(int x) {
 			 begin[i][j] = floor(begin[i][j]+0.05);
 		 }
 	 }
+	 return *X;
+ }
+
+ int Matrix::Norma(void)
+ {
+	 int norm = 0;
+	 int sum = 0;
+	 for (size_t i = 0; i < n; i++)
+	 {
+		 sum = 0;
+		 for (size_t j = 0; j < m; j++)
+		 {
+			 sum += pow(begin[i][j], 2);
+		 }
+		 norm += sum;
+	 }
+	 norm = sqrt(norm);
+	 return norm;
+ }
+
+ float Matrix::GetNorm(void)
+ {
+	 return norma;
+ }
+
+ int Matrix::GetCountIterationNorm(void)
+ {
+	 return countiterationnorm;
  }
 
 Matrix& Matrix::operator+(Matrix& temp) {
