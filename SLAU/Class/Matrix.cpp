@@ -410,11 +410,11 @@ void Matrix::Show(int x) {
 			 a12 = ite[i];
 			 ite[i] = ite[iMainEl];
 			 ite[iMainEl] = a12;
-			 cout << "ite: ";
+			 /*cout << "ite: ";
 			 for (size_t i = 0; i < n; i++)
 			 {
 				 cout << ite[i] << " ";
-			 }cout << endl;
+			 }cout << endl;*/
 		 }
 		/* cout << "iM: " << iMainEl << ", i: " << i << endl;
 		 cout << "temp:\n";
