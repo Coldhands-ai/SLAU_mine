@@ -268,7 +268,7 @@ void Matrix::Show(int x) {
 	 else return true;
  }
 
- Matrix& Matrix::MethodGauss_byrow(Matrix& rightTemp)
+ /*Matrix& Matrix::MethodGauss_byrow(Matrix& rightTemp)
  {
 	 if (n != m || rightTemp.m!=1)
 		 throw"n!=m  || right.m!=1";
@@ -314,8 +314,8 @@ void Matrix::Show(int x) {
 		 }
 
 
-		 /*cout << endl << endl;
-		 temp.Show();*/
+		 //cout << endl << endl;
+		 //temp.Show();
 
 		 // Делим строку на главный элемент
 		 // Проверяем, не является ли 2 матрица вектором
@@ -363,29 +363,32 @@ void Matrix::Show(int x) {
 	 //}
 	 //det = pow(-1, permut) * value_det;
 	 //return *X;
- }
+ }*/
 
  Matrix& Matrix::MethodGauss_bycolumn(Matrix& rightTemp)
  {
 	 if (n != m || rightTemp.m != 1)
 		 throw"n!=m  || right.m!=1";
+
 	 int* ite = new int[n]; // Чтобы знать новый порядок строк, например x2+x5+x1 ...
+
 	 for (size_t i = 0; i < n; i++)
 	 {
 		 ite[i] = i;
 	 }
-	 Matrix right = rightTemp;
-	 Matrix temp(*this);
+	 
+	 Matrix right = rightTemp; // Правая матрица - b
+	 Matrix temp(*this); // Левая матрица - A
 	 // Создаем решение СЛАУ
-	 Matrix* X = new Matrix();
-	 X->CreateNULL(n, 1);
-	 float a12 = 0;
-	 double MainEl;
-	 int iMainEl;
+	 Matrix* X = new Matrix(); // Матрица - x
+	 X->CreateNULL(n, 1); // Создаем на n чисел
+	 float a12 = 0; // Для изменения местами 2-х чисел
+	 double MainEl; // Главный элемент в строке
+	 int iMainEl; // Индекс главного элемента
 
 
 	 for (int i = 0; i < n; ++i) {
-		 // Инициализация главного элемента. Изначально он находится в матрице А с индексами [0][0]
+		 // Инициализация главного элемента. Изначально он находится в матрице А на главной деагонали
 		 MainEl = temp.begin[i][i];
 		 iMainEl = i;
 
@@ -401,7 +404,7 @@ void Matrix::Show(int x) {
 		 if (iMainEl != i) {
 			 // Увеличиваем количество перестановок
 			 permut++;
-			 // Меняем строки матрицы А местами
+			 // Меняем столбцы матрицы А местами
 			 for (int k = 0; k < n; ++k) {
 				 a12 = temp.begin[k][i];
 				 temp.begin[k][i] = temp.begin[k][iMainEl];
@@ -428,13 +431,6 @@ void Matrix::Show(int x) {
 				 temp.begin[k][j] += coeff_multiply * temp.begin[i][j];
 			 }
 		 }
-
-
-		 /*cout << "temp: \n";
-		 temp.Show();*/
-
-		 /*cout << "right: \n";
-		 right.Show();*/
 	 }
 
 	 // Нахождение решения 'x' системы линейных алгебраических уравнений Ax=f
@@ -458,7 +454,7 @@ void Matrix::Show(int x) {
 	 
 	 // Мы меняли местами x1,x2 ..., теперь вернем порядок
 	 bool bl1 = false;
-	 while (true) {
+	 while (true) { // Возвращаем 'x1','x2',.. на свое место (x4,x3,x1,x2 -> x1x2x3x4)
 		 bl1 = false;
 		 for (size_t i = 0; i < n - 1; i++)
 		 {

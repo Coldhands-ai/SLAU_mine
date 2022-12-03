@@ -30,7 +30,7 @@ public:
 	Matrix& operator*(Matrix& temp);
 	bool operator==(Matrix& temp);
 	bool operator!=(Matrix& temp);
-	Matrix& MethodGauss_byrow(Matrix&);
+	//Matrix& MethodGauss_byrow(Matrix&);
 	Matrix& MethodGauss_bycolumn(Matrix&);
 	Matrix& InverseGauss();
 	Matrix& MethodHoleckogo(Matrix&);
