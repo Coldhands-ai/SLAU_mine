@@ -522,14 +522,15 @@ void Matrix::Show(int x) {
 
  Matrix& Matrix::MethodHoleckogo(Matrix& right)
  {
+
 	 Matrix A = *this;
 	 if (*this != A.Transp()) {
-		 cout<<"MethodHoleckogo: Transp '!='\n";
+		 cout << "MethodHoleckogo: Transp '!='\n";
 		 return *this;
 	 }
-	 Matrix L;
-	 L.CreateNULL(n, m);
 	 Matrix LT;
+	 LT.CreateNULL(n, m);
+	 Matrix L;
 	 Matrix b = right;
 	 Matrix y;
 	 y.CreateNULL(b.n, b.m);
@@ -538,58 +539,62 @@ void Matrix::Show(int x) {
 
 	 for (size_t i = 0; i < n; i++)
 	 {
-		 L.begin[i][i] = A.begin[i][i]; // Беру a[i][i]
+		 LT.begin[i][i] = A.begin[i][i]; // Беру a[i][i]
 
 		 for (size_t j = 0; j < i; j++)
 		 {
-			 L.begin[i][i] -= pow(L.begin[i][j],2); // Отнимаю элементы слева от l[i][i]
+			 LT.begin[i][i] -= pow(LT.begin[i][j], 2); // Отнимаю элементы слева от l[i][i]
 		 }
 
-		 L.begin[i][i] = sqrt(L.begin[i][i]); // беру под корень
+		 LT.begin[i][i] = sqrt(LT.begin[i][i]); // беру под корень
 
-		 for (size_t j = i+1; j < n; j++) // Ухожу вниз
+		 for (size_t j = i + 1; j < n; j++) // Ухожу вниз
 		 {
-			 L.begin[j][i] = A.begin[j][i]; 
+			 LT.begin[j][i] = A.begin[j][i];
 
 			 for (size_t ij = 0; ij < i; ij++)
 			 {
-				 L.begin[j][i] -= L.begin[j][ij] * L.begin[i][ij];
+				 LT.begin[j][i] -= LT.begin[j][ij] * LT.begin[i][ij];
 			 }
-			 L.begin[j][i] /= L.begin[i][i];
+			 LT.begin[j][i] /= LT.begin[i][i];
 		 }
 	 }
 
-	 //y=L.MethodGauss_bycolumn(b);
-	 //*x = LT->MethodGauss_bycolumn(y);
+	 L = LT;
+	 L.Transp();
 
-	 for (size_t i = 0; i < L.n; i++)
+	 LT.Show();
+
+	 L.Show();
+
+	 (LT* L).Show();
+
+	 for (int i = LT.n - 1; i >= 0; i--)
 	 {
 		 y.begin[i][0] = b.begin[i][0];
-		 for (size_t j = 0; j < i; j++)
+		 for (size_t j = LT.m - 1; j > i; j--)
 		 {
-			 y.begin[i][0] -= (L.begin[i][j]*y.begin[j][0]);
+			 y.begin[i][0] -= (LT.begin[i][j] * y.begin[j][0]);
 		 }
 		 y.begin[i][0] /= L.begin[i][i];
 	 }
 
-	 LT = L;
-	 LT.Transp();
-	 
-	 //cout << "y: " << endl;
-	 //y.Show();
-	 //cout << "y Gauss: " << endl;
-	 //(L.MethodGauss_bycolumn(b)).Show();
+	 cout << "y: " << endl;
+	 y.Show();
+	 cout << "y Gauss: " << endl;
+	 (L.MethodGauss_bycolumn(b)).Show();
 
-
-	 for (int i = LT.n-1; i >= 0; i--)
+	 for (size_t i = 0; i < L.n; i++)
 	 {
 		 x->begin[i][0] = y.begin[i][0];
-		 for (size_t j = LT.m-1; j > i; j--)
+		 for (size_t j = 0; j < i; j++)
 		 {
-			 x->begin[i][0] -= (LT.begin[i][j]*x->begin[j][0]);
+			 x->begin[i][0] -= (L.begin[i][j] * x->begin[j][0]);
 		 }
-		 x->begin[i][0] /= LT.begin[i][i];
+		 x->begin[i][0] /= L.begin[i][i];
 	 }
+
+
 
 	 /*cout << "x: " << endl;
 	 x->Show();
@@ -597,7 +602,6 @@ void Matrix::Show(int x) {
 	 (LT.MethodGauss_bycolumn(L.MethodGauss_bycolumn(b))).Show();*/
 
 	 return *x;
-	 // TODO: вставьте здесь оператор return
  }
 
  Matrix& Matrix::MethodYakobi(Matrix&F, Matrix&x,const float eps)
@@ -628,15 +632,74 @@ void Matrix::Show(int x) {
 	 // TODO: вставьте здесь оператор return
  }
 
- Matrix& Matrix::MethodKVKor(Matrix& R)
+ Matrix& Matrix::MethodKVKor(Matrix& right)
  {
-	 Matrix F(R);
-	 Matrix* X = nullptr;
-	 Matrix A(*this);
-	 
+	 Matrix A = *this;
+	 if (*this != A.Transp()) {
+		 cout << "MethodHoleckogo: Transp '!='\n";
+		 return *this;
+	 }
+	 Matrix LT;
+	 LT.CreateNULL(n, m);
+	 Matrix L;
+	 Matrix b = right;
+	 Matrix y;
+	 y.CreateNULL(b.n, b.m);
+	 Matrix* x;
+	 x = new Matrix(y);
 
+	 for (size_t i = 0; i < n; i++)
+	 {
+		 LT.begin[i][i] = A.begin[i][i]; // Беру a[i][i]
 
-	 return *X;
+		 for (size_t j = 0; j < i; j++)
+		 {
+			 LT.begin[i][i] -= pow(LT.begin[i][j], 2); // Отнимаю элементы слева от l[i][i]
+		 }
+
+		 LT.begin[i][i] = sqrt(LT.begin[i][i]); // беру под корень
+
+		 for (size_t j = i + 1; j < n; j++) // Ухожу вниз
+		 {
+			 LT.begin[j][i] = A.begin[j][i];
+
+			 for (size_t ij = 0; ij < i; ij++)
+			 {
+				 LT.begin[j][i] -= LT.begin[j][ij] * LT.begin[i][ij];
+			 }
+			 LT.begin[j][i] /= LT.begin[i][i];
+		 }
+	 }
+
+	 for (size_t i = 0; i < LT.n; i++)
+	 {
+		 y.begin[i][0] = b.begin[i][0];
+		 for (size_t j = 0; j < i; j++)
+		 {
+			 y.begin[i][0] -= (LT.begin[i][j] * y.begin[j][0]);
+		 }
+		 y.begin[i][0] /= LT.begin[i][i];
+	 }
+
+	 L = LT;
+	 L.Transp();
+
+	 for (int i = L.n - 1; i >= 0; i--)
+	 {
+		 x->begin[i][0] = y.begin[i][0];
+		 for (size_t j = L.m - 1; j > i; j--)
+		 {
+			 x->begin[i][0] -= (L.begin[i][j] * x->begin[j][0]);
+		 }
+		 x->begin[i][0] /= L.begin[i][i];
+	 }
+
+	 /*cout << "x: " << endl;
+	 x->Show();
+	 cout << "x Gauss: " << endl;
+	 (LT.MethodGauss_bycolumn(L.MethodGauss_bycolumn(b))).Show();*/
+
+	 return *x;
  }
 
  Matrix& Matrix::Integer(void)
