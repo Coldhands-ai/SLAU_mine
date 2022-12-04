@@ -33,6 +33,7 @@ public:
 	Matrix& InverseGauss();
 	Matrix& MethodHoleckogo(Matrix&);
 	Matrix& MethodYakobi(Matrix&, Matrix&,const float);
+	Matrix& MethodKVKor(Matrix&);
 	Matrix& Integer(void);
 	Matrix& Okrugl(void);
 	float Norma(void);

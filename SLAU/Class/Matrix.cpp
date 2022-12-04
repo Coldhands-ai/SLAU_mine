@@ -529,7 +529,7 @@ void Matrix::Show(int x) {
 	 }
 	 Matrix L;
 	 L.CreateNULL(n, m);
-	 Matrix *LT;
+	 Matrix LT;
 	 Matrix b = right;
 	 Matrix y;
 	 y.CreateNULL(b.n, b.m);
@@ -559,11 +559,42 @@ void Matrix::Show(int x) {
 		 }
 	 }
 
-	 LT = new Matrix(L);
-	 LT->Transp();
+	 //y=L.MethodGauss_bycolumn(b);
+	 //*x = LT->MethodGauss_bycolumn(y);
 
-	 y=L.MethodGauss_bycolumn(b);
-	 *x = LT->MethodGauss_bycolumn(y);
+	 for (size_t i = 0; i < L.n; i++)
+	 {
+		 y.begin[i][0] = b.begin[i][0];
+		 for (size_t j = 0; j < i; j++)
+		 {
+			 y.begin[i][0] -= (L.begin[i][j]*y.begin[j][0]);
+		 }
+		 y.begin[i][0] /= L.begin[i][i];
+	 }
+
+	 LT = L;
+	 LT.Transp();
+	 
+	 //cout << "y: " << endl;
+	 //y.Show();
+	 //cout << "y Gauss: " << endl;
+	 //(L.MethodGauss_bycolumn(b)).Show();
+
+
+	 for (int i = LT.n-1; i >= 0; i--)
+	 {
+		 x->begin[i][0] = y.begin[i][0];
+		 for (size_t j = LT.m-1; j > i; j--)
+		 {
+			 x->begin[i][0] -= (LT.begin[i][j]*x->begin[j][0]);
+		 }
+		 x->begin[i][0] /= LT.begin[i][i];
+	 }
+
+	 /*cout << "x: " << endl;
+	 x->Show();
+	 cout << "x Gauss: " << endl;
+	 (LT.MethodGauss_bycolumn(L.MethodGauss_bycolumn(b))).Show();*/
 
 	 return *x;
 	 // TODO: вставьте здесь оператор return
@@ -595,6 +626,17 @@ void Matrix::Show(int x) {
 	 } while (norm > eps);
 	 return *y;
 	 // TODO: вставьте здесь оператор return
+ }
+
+ Matrix& Matrix::MethodKVKor(Matrix& R)
+ {
+	 Matrix F(R);
+	 Matrix* X = nullptr;
+	 Matrix A(*this);
+	 
+
+
+	 return *X;
  }
 
  Matrix& Matrix::Integer(void)

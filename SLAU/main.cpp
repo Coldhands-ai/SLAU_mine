@@ -53,8 +53,8 @@ int main() {
 		X1.Show();
 		cout << "MethodHoleckogo: " << endl;
 		X2.Show();
-		cout << "MethodGauss =? MethodHoleckogo: " << (X1 == X2) << endl;
-
+		//cout << "MethodGauss =? MethodHoleckogo: " << (X1 == X2) << endl;
+		
 		cout << "Nevyazka:" << endl;
 		Matrix rMG = A * X2 - f;
 		cout << "r :" << endl;
@@ -87,7 +87,6 @@ int main() {
 		cout << "M(A) = " << A.Norma() * AT->Norma() << endl;
 		//cout << "Norma: " << A.Norma() << endl;
 
-		
 	}
 	catch (...) {
 		cout << "Error" << endl;
