@@ -6,8 +6,6 @@ class Matrix
 	int n, m;
 	int permut;
 	float det;
-	float norma;
-	int countiterationnorm;
 public:
 	Matrix();
 	Matrix(int, int);
@@ -37,8 +35,6 @@ public:
 	Matrix& MethodYakobi(Matrix&, Matrix&,const float);
 	Matrix& Integer(void);
 	Matrix& Okrugl(void);
-	int Norma(void);
-	float GetNorm(void);
-	int GetCountIterationNorm(void);
+	float Norma(void);
 };
 

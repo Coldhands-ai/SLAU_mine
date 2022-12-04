@@ -145,6 +145,10 @@
   <ItemGroup>
     <ClInclude Include="Class\Matrix.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="A.txt" />
+    <Text Include="f.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

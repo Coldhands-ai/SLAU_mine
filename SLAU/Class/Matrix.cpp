@@ -12,8 +12,6 @@ using namespace std;
 	m = 0;
 	permut = 0;
 	det = 1;
-	norma = -1;
-	countiterationnorm = 0;
 }
 
  Matrix::Matrix(int n,int m) {
@@ -22,8 +20,6 @@ using namespace std;
 	 m = 0;
 	 permut = 0;
 	 det = 1;
-	 norma = -1;
-	 countiterationnorm = 0;
 
 	 Create(n, m);
  }
@@ -35,8 +31,6 @@ Matrix::Matrix(const Matrix& temp) {
 	this->det = temp.det;
 	this->permut = temp.permut;
 	this->begin = new float * [this->n];
-	this->norma = temp.norma;
-	this->countiterationnorm = temp.countiterationnorm;
 
 	for (int i = 0; i < this->n; i++) {
 		this->begin[i] = new float [this->m] ;
@@ -52,8 +46,6 @@ Matrix::Matrix(float** temp, int n, int m)
 	this->m = m;
 	this->det = 0;
 	this->permut = 0;
-	this->norma = -1;
-	this->countiterationnorm = 0;
 
 
 	begin = new float* [n];
@@ -584,10 +576,8 @@ void Matrix::Show(int x) {
 	 Matrix* y = new Matrix(x);
 	 
 	 float norm=0;
-	 countiterationnorm=0;
 
 	 do {
-		 countiterationnorm++;
 		 for (int i = 0; i < n; i++) {
 			 TempX.begin[i][0] = F.begin[i][0];
 			 for (int g = 0; g < n; g++) {
@@ -603,7 +593,6 @@ void Matrix::Show(int x) {
 			 y->begin[h][0] = TempX.begin[h][0];
 		 }
 	 } while (norm > eps);
-	 this->norma = norm;
 	 return *y;
 	 // TODO: вставьте здесь оператор return
  }
@@ -631,32 +620,23 @@ void Matrix::Show(int x) {
 	 return *X;
  }
 
- int Matrix::Norma(void)
+ float Matrix::Norma(void)
  {
-	 int norm = 0;
-	 int sum = 0;
+	 float norm = 0;
+	 float sum = 0;
 	 for (size_t i = 0; i < n; i++)
 	 {
 		 sum = 0;
 		 for (size_t j = 0; j < m; j++)
 		 {
-			 sum += pow(begin[i][j], 2);
+			 sum += abs(begin[i][j]);
 		 }
-		 norm += sum;
+		 if (norm < sum)
+			 norm = sum;
 	 }
-	 norm = sqrt(norm);
 	 return norm;
  }
 
- float Matrix::GetNorm(void)
- {
-	 return norma;
- }
-
- int Matrix::GetCountIterationNorm(void)
- {
-	 return countiterationnorm;
- }
 
 Matrix& Matrix::operator+(Matrix& temp) {
 	if (this->n != temp.n) {

@@ -20,7 +20,7 @@ int main() {
 	//A.Show();
 	//B.Show();
 
-	try { // Метод Гаусса по столбцу
+	/*try { // Метод Гаусса по столбцу
 		// 1
 		Matrix X = A.MethodGauss_bycolumn(f); // Ax=f
 		cout << "X :" << endl;
@@ -44,50 +44,54 @@ int main() {
 	}
 	catch (...) {
 		cout << "Error" << endl;
+	}*/
+
+	try { // Метод Холецкого
+		Matrix X1 = A.MethodGauss_bycolumn(f);
+		Matrix X2 = A.MethodHoleckogo(f);
+		cout << "MethodGauss: " << endl;
+		X1.Show();
+		cout << "MethodHoleckogo: " << endl;
+		X2.Show();
+		cout << "MethodGauss =? MethodHoleckogo: " << (X1 == X2) << endl;
+
+		cout << "Nevyazka:" << endl;
+		Matrix rMG = A * X2 - f;
+		cout << "r :" << endl;
+		rMG.Show(10);
+
+		cout << "MethodYakobi: " << endl;
+		cout << "int X: " << endl;
+		X2 = X2.Okrugl();
+		X2.Show(10);
+		Matrix MY = A.MethodYakobi(f, X2, 0.000001);
+		cout << "MY: " << endl;
+		MY.Show(10);
+
+		cout << "Nevyazka:" << endl;
+		Matrix rMY = A * X2 - f;
+		rMY.Show(10);
+
+		AT = &(A.InverseGauss());
+
+		cout << "AT: " << endl;
+		AT->Show();
+
+		cout << "Norma: \n";
+		cout << fixed;
+		cout.precision(5);
+		cout<<"A: "<< A.Norma() << endl;
+		AT->MethodYakobi(f, X2,0.0001);
+		cout <<"AT: "<< AT->Norma() << endl;
+		//cout << "Norma =? 0: " << (0.0==(AT->GetNorm())) << endl;
+		cout << "M(A) = " << A.Norma() * AT->Norma() << endl;
+		//cout << "Norma: " << A.Norma() << endl;
+
+		
 	}
-
-	//try { // Метод Холецкого
-	//	Matrix X1 = A.MethodGauss_bycolumn(f);
-	//	Matrix X2 = A.MethodHoleckogo(f);
-	//	cout << "MethodGauss: " << endl;
-	//	X1.Show();
-	//	cout << "MethodHoleckogo: " << endl;
-	//	X2.Show();
-	//	cout << "MethodGauss =? MethodHoleckogo: " << (X1 == X2) << endl;
-
-	//	cout << "Nevyazka:" << endl;
-	//	Matrix rMG = A * X2 - f;
-	//	cout << "r :" << endl;
-	//	rMG.Show(10);
-
-	//	cout << "MethodYakobi: " << endl;
-	//	cout << "int X: " << endl;
-	//	X2 = X2.Okrugl();
-	//	X2.Show(10);
-	//	Matrix MY = A.MethodYakobi(f, X2, 0.000001);
-	//	cout << "MY: " << endl;
-	//	MY.Show(10);
-
-	//	cout << "Nevyazka:" << endl;
-	//	Matrix rMY = A * X2 - f;
-	//	rMY.Show(10);
-
-	//	AT = &(A.InverseGauss());
-
-	//	cout << "NormaYakobi: \n";
-	//	cout << fixed;
-	//	cout.precision(20);
-	//	cout<< A.GetNorm() <<" countIteration: "<<A.GetCountIterationNorm()<< endl;
-	//	AT->MethodYakobi(f, X2,0.000001);
-	//	cout << AT->GetNorm() << " countIteration: " << AT->GetCountIterationNorm()<< endl;
-	//	cout << "M(A) = " << A.GetNorm() * AT->GetNorm() << endl;
-	//	//cout << "Norma: " << A.Norma() << endl;
-
-	//	
-	//}
-	//catch (...) {
-	//	cout << "Error" << endl;
-	//}
+	catch (...) {
+		cout << "Error" << endl;
+	}
 
 }
 
