@@ -102,16 +102,18 @@ int main() {
 		cout << "r :" << endl;
 		rMG.Show(10);
 
-		cout << "MethodYakobi: " << endl;
-		cout << "int X: " << endl;
-		X2 = X2.Okrugl();
-		X2.Show(10);
-		Matrix MY = A.MethodYakobi(f, X2, 0.000001);
-		cout << "MY: " << endl;
+		//cout << "MethodYakobi: " << endl;
+		//cout << "int X: " << endl;
+		//X2 = X2.Okrugl();
+		//X2.Show(10);
+		Matrix MY = A.MethodYakobi(f, X2, 0.00000001);
+		cout << "Method Yakobi: " << endl;
 		MY.Show(10);
 
+		cout << "MethodGauss =? MethodHoleckogo: " << (MY == X2) << endl;
+
 		cout << "Nevyazka:" << endl;
-		Matrix rMY = A * X2 - f;
+		Matrix rMY = A * MY - f;
 		rMY.Show(10);
 
 		AT = &(A.InverseGauss());
@@ -123,7 +125,6 @@ int main() {
 		cout << fixed;
 		cout.precision(5);
 		cout<<"A: "<< A.Norma() << endl;
-		AT->MethodYakobi(f, X2,0.0001);
 		cout <<"AT: "<< AT->Norma() << endl;
 		//cout << "Norma =? 0: " << (0.0==(AT->GetNorm())) << endl;
 		cout << "M(A) = " << A.Norma() * AT->Norma() << endl;

@@ -37,5 +37,7 @@ public:
 	Matrix& Integer(void);
 	Matrix& Okrugl(void);
 	float Norma(void);
+	float Norma2Vector(void);
+	float Norma2Matrix(void);
 };
 

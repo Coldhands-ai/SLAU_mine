@@ -590,15 +590,16 @@ void Matrix::Show(int x) {
 	 return *x;
  }
 
- Matrix& Matrix::MethodYakobi(Matrix&F, Matrix&x,const float eps)
+ Matrix& Matrix::MethodYakobi(Matrix& F, Matrix& x, const float eps)
  {
 	 Matrix TempX;
 	 TempX.CreateNULL(n, 1);
 	 Matrix* y = new Matrix(x);
-	 
-	 float norm=0;
-
+	 float sum = 0;
+	 float norm = 0;
+	 size_t countoperation = 0;
 	 do {
+		 countoperation++;
 		 for (int i = 0; i < n; i++) {
 			 TempX.begin[i][0] = F.begin[i][0];
 			 for (int g = 0; g < n; g++) {
@@ -607,13 +608,27 @@ void Matrix::Show(int x) {
 			 }
 			 TempX.begin[i][0] /= begin[i][i];
 		 }
-		 norm = fabs(y->begin[0][0] - TempX.begin[0][0]);
+
+		  if (norm == 0)
+			  norm = fabs(y->Norma2Vector() - TempX.Norma2Vector());
+
+		  if (norm > fabs(y->Norma2Vector() - TempX.Norma2Vector()))
+			  norm = fabs(y->Norma2Vector() - TempX.Norma2Vector());
+
+		  for (size_t i = 0; i < n; i++)
+		  {
+			  y->begin[i][0] = TempX.begin[i][0];
+		  }
+
+		 /*norm = fabs(y->begin[0][0] - TempX.begin[0][0]);
+
 		 for (int h = 0; h < n; h++) {
 			 if (fabs(y->begin[h][0] - TempX.begin[h][0]) > norm)
 				 norm = fabs(y->begin[h][0] - TempX.begin[h][0]);
 			 y->begin[h][0] = TempX.begin[h][0];
-		 }
-	 } while (norm > eps);
+		 }*/
+	 } while (norm > eps && countoperation < x.n);
+	 cout << "Count of operations in Method Yakobi: " << countoperation << endl;
 	 return *y;
 	 // TODO: вставьте здесь оператор return
  }
@@ -705,7 +720,7 @@ void Matrix::Show(int x) {
 	 {
 		 for (size_t j = 0; j < m; j++)
 		 {
-			 begin[i][j] = floor(begin[i][j]+0.05);
+			 X->begin[i][j] = floor(begin[i][j]);
 		 }
 	 }
 	 return *X;
@@ -726,6 +741,17 @@ void Matrix::Show(int x) {
 			 norm = sum;
 	 }
 	 return norm;
+ }
+
+ float Matrix::Norma2Vector(void)
+ {
+	 float sum = 0;
+	 for (size_t i = 0; i < n; i++)
+	 {
+		 sum += pow(begin[i][0],2);
+	 }
+	 sum = sqrt(sum);
+	 return sum;
  }
 
 
