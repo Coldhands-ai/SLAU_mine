@@ -608,7 +608,8 @@ void Matrix::Show(int x) {
 			 }
 			 TempX.begin[i][0] /= begin[i][i];
 		 }
-
+		 //cout << "TempX: [" << countoperation << endl;
+		 //TempX.Show(20);
 		  if (norm == 0)
 			  norm = fabs(y->Norma2Vector() - TempX.Norma2Vector());
 
@@ -619,6 +620,8 @@ void Matrix::Show(int x) {
 		  {
 			  y->begin[i][0] = TempX.begin[i][0];
 		  }
+		  //cout << "y: " << endl;
+		  //y->Show(20);
 
 		 /*norm = fabs(y->begin[0][0] - TempX.begin[0][0]);
 
@@ -773,6 +776,20 @@ Matrix& Matrix::operator+(Matrix& temp) {
 	return *A;
 }
 
+Matrix& Matrix::operator+(float ws)
+{
+	Matrix* X = new Matrix(*this);
+	if (begin == nullptr) throw "Matrix is none";
+	for (size_t i = 0; i < n; i++)
+	{
+		for (size_t j = 0; j < m; j++)
+		{
+			X->begin[i][j] += ws;
+		}
+	}
+	return *X;
+}
+
 Matrix& Matrix::operator-(Matrix& temp) {
 	if (this->n != temp.n) {
 		cout << "n != temp.n" << endl;
@@ -789,6 +806,20 @@ Matrix& Matrix::operator-(Matrix& temp) {
 		}
 	}
 	return *A;
+}
+
+Matrix& Matrix::operator-(float ws)
+{
+	Matrix* X = new Matrix(*this);
+	if (begin == nullptr) throw "Matrix is none";
+	for (size_t i = 0; i < n; i++)
+	{
+		for (size_t j = 0; j < m; j++)
+		{
+			X->begin[i][j] -= ws;
+		}
+	}
+	return *X;
 }
 
 Matrix& Matrix::operator=(Matrix& temp) {
