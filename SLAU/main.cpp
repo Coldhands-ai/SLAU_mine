@@ -87,7 +87,7 @@ int main() {
 		cout << "Error" << endl;
 	}*/
 
-	try { // Метод Холецкого
+	try { // Метод квадратных корней
 		Matrix X2 = A.MethodKVKor(f);
 		cout << "Метод квадратного корня: " << endl;
 		X2.Show();

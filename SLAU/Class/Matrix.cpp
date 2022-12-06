@@ -642,9 +642,9 @@ void Matrix::Show(int x) {
 		 cout << "MethodKVKornya: Transp '!='\n";
 		 return *this;
 	 }
-	 Matrix LT;
-	 LT.CreateNULL(n, m);
 	 Matrix L;
+	 L.CreateNULL(n, m);
+	 Matrix LT;
 	 Matrix b = right;
 	 Matrix y;
 	 y.CreateNULL(b.n, b.m);
@@ -653,48 +653,48 @@ void Matrix::Show(int x) {
 
 	 for (size_t i = 0; i < n; i++)
 	 {
-		 LT.begin[i][i] = A.begin[i][i]; // Беру a[i][i]
+		 L.begin[i][i] = A.begin[i][i]; // Беру a[i][i]
 
 		 for (size_t j = 0; j < i; j++)
 		 {
-			 LT.begin[i][i] -= pow(LT.begin[i][j], 2); // Отнимаю элементы слева от l[i][i]
+			 L.begin[i][i] -= pow(L.begin[i][j], 2); // Отнимаю элементы слева от l[i][i]
 		 }
 
-		 LT.begin[i][i] = sqrt(LT.begin[i][i]); // беру под корень
+		 L.begin[i][i] = sqrt(L.begin[i][i]); // беру под корень
 
-		 for (size_t j = i + 1; j < n; j++) // Ухожу вниз и все нижние зануляю
+		 for (size_t j = i + 1; j < n; j++) // Все нижние зануляются и получается нижнетреугольная матрица
 		 {
-			 LT.begin[j][i] = A.begin[j][i];
+			 L.begin[j][i] = A.begin[j][i];
 
 			 for (size_t ij = 0; ij < i; ij++)
 			 {
-				 LT.begin[j][i] -= LT.begin[j][ij] * LT.begin[i][ij];
+				 L.begin[j][i] -= L.begin[j][ij] * L.begin[i][ij];
 			 }
-			 LT.begin[j][i] /= LT.begin[i][i];
+			 L.begin[j][i] /= L.begin[i][i];
 		 }
 	 }
 
-	 for (size_t i = 0; i < LT.n; i++)
+	 for (size_t i = 0; i < L.n; i++) // Вычисляется L*y=b
 	 {
 		 y.begin[i][0] = b.begin[i][0];
 		 for (size_t j = 0; j < i; j++)
 		 {
-			 y.begin[i][0] -= (LT.begin[i][j] * y.begin[j][0]);
+			 y.begin[i][0] -= (L.begin[i][j] * y.begin[j][0]);
 		 }
-		 y.begin[i][0] /= LT.begin[i][i];
+		 y.begin[i][0] /= L.begin[i][i];
 	 }
 
-	 L = LT;
-	 L.Transp();
+	 LT = L;
+	 LT.Transp();
 
-	 for (int i = L.n - 1; i >= 0; i--)
+	 for (int i = LT.n - 1; i >= 0; i--) // Вычисляется LT*x=y
 	 {
 		 x->begin[i][0] = y.begin[i][0];
-		 for (size_t j = L.m - 1; j > i; j--)
+		 for (size_t j = LT.m - 1; j > i; j--)
 		 {
-			 x->begin[i][0] -= (L.begin[i][j] * x->begin[j][0]);
+			 x->begin[i][0] -= (LT.begin[i][j] * x->begin[j][0]);
 		 }
-		 x->begin[i][0] /= L.begin[i][i];
+		 x->begin[i][0] /= LT.begin[i][i];
 	 }
 
 	 return *x;
@@ -702,7 +702,7 @@ void Matrix::Show(int x) {
 
  Matrix& Matrix::MethodGaussZeydel(Matrix& F, Matrix& x,const float eps)
  {
-	 Matrix TempX; // Будет сохранять предыдущий вектор
+	 Matrix TempX; // Будем сохранять предыдущий вектор
 	 TempX.CreateNULL(n, 1);
 	 Matrix* y = new Matrix(x); // Будем получать новый вектор
 	 float norm = 0;
@@ -719,9 +719,9 @@ void Matrix::Show(int x) {
 			 var = 0;
 			 for (size_t j = 0; j < n; j++)
 				if (j != i)	
-					var += (begin[i][j] * y->begin[j][0]); // Вычисляем коэффициент
+					var += (begin[i][j] * y->begin[j][0]); // Вычисляем коэффициент для нового вектора
 			 y->begin[i][0] = (F.begin[i][0] - var) / begin[i][i];
-			 norm = fabs(y->Norma2Vector() - TempX.Norma2Vector());
+			 norm = fabs(y->Norma2Vector() - TempX.Norma2Vector()); // Вычисляем векторную норму
 		 }
 	 } while (norm > eps);
 	 cout << "Количество операций: " << countoperation << endl;
@@ -770,6 +770,7 @@ void Matrix::Show(int x) {
 
  float Matrix::Norma2Vector(void)
  {
+	 // sqrt(sum(вектор))
 	 float sum = 0;
 	 for (size_t i = 0; i < n; i++)
 	 {
