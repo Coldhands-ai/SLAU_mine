@@ -36,10 +36,10 @@ public:
 	Matrix& MethodHoleckogo(Matrix&);
 	Matrix& MethodYakobi(Matrix&, Matrix&,const float);
 	Matrix& MethodKVKor(Matrix&);
+	Matrix& MethodGaussZeydel(Matrix&, Matrix&, const float);
 	Matrix& Integer(void);
 	Matrix& Okrugl(void);
 	float Norma(void);
 	float Norma2Vector(void);
-	float Norma2Matrix(void);
 };
 

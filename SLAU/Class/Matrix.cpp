@@ -595,7 +595,6 @@ void Matrix::Show(int x) {
 	 Matrix TempX;
 	 TempX.CreateNULL(n, 1);
 	 Matrix* y = new Matrix(x);
-	 float sum = 0;
 	 float norm = 0;
 	 size_t countoperation = 0;
 	 do {
@@ -663,7 +662,7 @@ void Matrix::Show(int x) {
 
 		 LT.begin[i][i] = sqrt(LT.begin[i][i]); // беру под корень
 
-		 for (size_t j = i + 1; j < n; j++) // Ухожу вниз
+		 for (size_t j = i + 1; j < n; j++) // Ухожу вниз и все нижние зануляю
 		 {
 			 LT.begin[j][i] = A.begin[j][i];
 
@@ -698,12 +697,35 @@ void Matrix::Show(int x) {
 		 x->begin[i][0] /= L.begin[i][i];
 	 }
 
-	 /*cout << "x: " << endl;
-	 x->Show();
-	 cout << "x Gauss: " << endl;
-	 (LT.MethodGauss_bycolumn(L.MethodGauss_bycolumn(b))).Show();*/
-
 	 return *x;
+ }
+
+ Matrix& Matrix::MethodGaussZeydel(Matrix& F, Matrix& x,const float eps)
+ {
+	 Matrix TempX; // Будет сохранять предыдущий вектор
+	 TempX.CreateNULL(n, 1);
+	 Matrix* y = new Matrix(x); // Будем получать новый вектор
+	 float norm = 0;
+	 size_t countoperation = 0;
+	 float var = 0;
+	 do {
+		 countoperation++;
+		 for (size_t i = 0; i < n; i++)
+		 {
+			 TempX.begin[i][0] = y->begin[i][0]; // Сохраняем новый в предыдущий тк цикл начался заново
+		 }
+		 for (size_t i = 0; i < n; i++)
+		 {
+			 var = 0;
+			 for (size_t j = 0; j < n; j++)
+				if (j != i)	
+					var += (begin[i][j] * y->begin[j][0]); // Вычисляем коэффициент
+			 y->begin[i][0] = (F.begin[i][0] - var) / begin[i][i];
+			 norm = fabs(y->Norma2Vector() - TempX.Norma2Vector());
+		 }
+	 } while (norm > eps);
+	 cout << "Количество операций: " << countoperation << endl;
+	 return *y;
  }
 
  Matrix& Matrix::Integer(void)

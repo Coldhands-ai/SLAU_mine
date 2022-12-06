@@ -88,31 +88,20 @@ int main() {
 	}*/
 
 	try { // Метод Холецкого
-		Matrix X1 = A.MethodGauss_bycolumn(f);
-		Matrix X2 = A.MethodHoleckogo(f);
-		cout << "MethodGauss: " << endl;
-		X1.Show();
-		cout << "MethodHoleckogo: " << endl;
+		Matrix X2 = A.MethodKVKor(f);
+		cout << "Метод квадратного корня: " << endl;
 		X2.Show();
-		//cout << "MethodGauss =? MethodHoleckogo: " << (X1 == X2) << endl;
-		
-		cout << "Nevyazka:" << endl;
+
+		cout << "Невязка:" << endl;
 		Matrix rMG = A * X2 - f;
-		cout << "r :" << endl;
 		rMG.Show(10);
 
-		//cout << "MethodYakobi: " << endl;
-		//cout << "int X: " << endl;
-		//X2 = X2.Okrugl();
-		//X2.Show(10);
-		X2 = X2;
-		Matrix MY = A.MethodYakobi(f, X2, 0.000001);
-		cout << "Method Yakobi: " << endl;
+
+		Matrix MY = A.MethodGaussZeydel(f, X2, 0.000001);
+		cout << "Метод Гаусса-Зейделя: " << endl;
 		MY.Show(10);
 
-		cout << "MethodGauss =? MethodHoleckogo: " << (MY == X2) << endl;
-
-		cout << "Nevyazka:" << endl;
+		cout << "Невязка:" << endl;
 		Matrix rMY = A * MY - f;
 		rMY.Show(10);
 
@@ -121,7 +110,7 @@ int main() {
 		/*cout << "AT: " << endl;
 		AT->Show();*/
 
-		cout << "Norma: \n";
+		cout << "Нормы: \n";
 		cout << fixed;
 		cout.precision(5);
 		cout<<"A: "<< A.Norma() << endl;
