@@ -823,6 +823,7 @@ Matrix& Matrix::operator-(float ws)
 }
 
 Matrix& Matrix::operator=(Matrix& temp) {
+	Matrix A(temp);
 	for (int i = 0; i < n; i++)
 		delete begin[i];
 	delete begin;
@@ -832,7 +833,7 @@ Matrix& Matrix::operator=(Matrix& temp) {
 	for (int i = 0; i < n; i++) {
 		begin[i] = new float[m];
 		for (int j = 0; j < m; j++) {
-			begin[i][j] = temp.begin[i][j];
+			begin[i][j] = A.begin[i][j];
 		}
 	}
 	return *this;

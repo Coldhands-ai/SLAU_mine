@@ -105,7 +105,7 @@ int main() {
 		//cout << "int X: " << endl;
 		//X2 = X2.Okrugl();
 		//X2.Show(10);
-		X2 = X2 + 1;
+		X2 = X2;
 		Matrix MY = A.MethodYakobi(f, X2, 0.000001);
 		cout << "Method Yakobi: " << endl;
 		MY.Show(10);
@@ -118,8 +118,8 @@ int main() {
 
 		AT = &(A.InverseGauss());
 
-		cout << "AT: " << endl;
-		AT->Show();
+		/*cout << "AT: " << endl;
+		AT->Show();*/
 
 		cout << "Norma: \n";
 		cout << fixed;
