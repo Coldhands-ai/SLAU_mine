@@ -751,6 +751,24 @@ void Matrix::Show(int x) {
 	 return *X;
  }
 
+ Matrix& Matrix::MethodYakobi(float x, float y, float z)
+ {
+	 Matrix* temp = new Matrix();
+	 temp->CreateNULL(3,3);
+	 temp->begin[0][0] = 2 * x + 1;
+	 temp->begin[0][1] = -2 * z;
+	 temp->begin[0][2] = -2 * y;
+
+	 temp->begin[1][0] = 3 * z;
+	 temp->begin[1][1] = 1 - 2 * y;
+	 temp->begin[1][2] = 3 * x;
+
+	 temp->begin[2][0] = 2 * y;
+	 temp->begin[2][1] = 2 * x;
+	 temp->begin[2][2] = 1 + 2 * z;
+	 return *temp;
+ }
+
  float Matrix::F1_S(float x, float y, float z)
  {
 	 return 0.1-pow(x,2) + 2*y*z;
