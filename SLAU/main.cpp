@@ -22,14 +22,21 @@ int main() {
 
 	try { 
 
-		cout << "Метод Гаусса-Зейделя: " << endl;
-		Matrix* X2 = &(A.MethodSeidel(f,0.00001));
-		X2->Show();
+		cout << "Method Seidel: " << endl;
+		Matrix* X1 = &(A.MethodSeidel(f,0.001));
+		X1->Show();
 
-		cout << "Невязка: " << endl;
+		cout << "Nevyazka: " << endl;
+		Matrix* NX1 = &(X1->Nevyazka3());
+		NX1->Show(10);
+
+		cout << "Method Newton: " << endl;
+		Matrix* X2 = &(A.MethodNewton(*X1, 0.00001));
+		X2->Show(10);
+
+		cout << "Nevyazka: " << endl;
 		Matrix* NX2 = &(X2->Nevyazka3());
 		NX2->Show(10);
-
 	}
 	catch (...) {
 		cout << "Error" << endl;

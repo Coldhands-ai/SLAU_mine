@@ -793,26 +793,45 @@ void Matrix::Show(int x) {
 		 newX->begin[2][0] = F3_S(newX->begin[0][0], newX->begin[1][0], lastX.begin[2][0]);
 		 countoperation++;
 	 }
-	 cout << "Количество операций: " << countoperation << endl;
+	 cout << "Количество операций MethodSeidel: " << countoperation << endl;
 	 return *newX;
  }
 
  Matrix& Matrix::MethodNewton(Matrix& R, const float eps)
  {
-	 Matrix* newX = new Matrix();
-	 newX->CreateNULL(R.n,1);
+	 Matrix* newX;
 	 Matrix lastX = R;
 
-	 int countiteration = 0;
+	 int countoperation = 0;
 
 	 Matrix inv_J = (MethodYakobi(lastX.begin[0][0], lastX.begin[1][0], lastX.begin[2][0])).InverseGauss();
 	 
 	 Matrix f;
-	 f.CreateNULL(3, 0);
+	 f.CreateNULL(3, 1);
 	 f.begin[0][0] = F1(lastX[0], lastX[1], lastX[2]);
 	 f.begin[1][0] = F2(lastX[0], lastX[1], lastX[2]);
 	 f.begin[2][0] = F3(lastX[0], lastX[1], lastX[2]);
-	 //mul = matrix_by_vector(inv_J, f);
+	 Matrix* mul;
+	 //mul = &(inv_J*f);
+	 mul=&(MatrixByVector(inv_J, f));
+	 //cout << "mul:\n";
+	 //mul->Show(10);
+	 newX = &(lastX - f);
+
+	 while (max(*newX, lastX) > eps) {
+		 lastX = *newX;
+		 f.begin[0][0] = F1(lastX[0], lastX[1], lastX[2]);
+		 f.begin[1][0] = F2(lastX[0], lastX[1], lastX[2]);
+		 f.begin[2][0] = F3(lastX[0], lastX[1], lastX[2]);
+		 delete mul;
+		 mul= &(MatrixByVector(inv_J, f));
+		 delete newX;
+		 newX = &(lastX - f);
+		 countoperation++;
+		 cout << "Обратная матрица к Якоби на " << countoperation << " итерации:\n";
+		 inv_J.Show();
+	 }
+	 cout << "Количество операций MethodNewton: " << countoperation << endl;
 	 return *newX;
  }
 
@@ -830,6 +849,23 @@ void Matrix::Show(int x) {
 	 X->begin[2][0] = F3(x, y, z);
 
 	 return *X;
+ }
+
+ Matrix& Matrix::MatrixByVector(Matrix& G, Matrix& v)
+ {
+	 Matrix* result = new Matrix();
+	 result->CreateNULL(G.n, 1);
+	 float total = 0;
+	 
+	 for (size_t i = 0; i < G.n; i++)
+	 {
+		 for (size_t j = 0; j < v.n; j++)
+		 {
+			 total += G.begin[i][j] * v.begin[j][0];
+		 }
+		 result->begin[i][0]=total;
+	 }
+	 return *result;
  }
 
  float Matrix::operator[](int n)
@@ -911,6 +947,28 @@ void Matrix::Show(int x) {
 	 return sum;
  }
 
+ void Matrix::append(float x)
+ {
+	 if (m != 1)throw"no vector";
+	 // Пересоздаем и добавляем
+	 float** temp = new float* [n + 1];
+	 for (size_t i = 0; i < n; i++)
+	 {
+		 temp[i] = new float[1];
+		 temp[i] = begin[i];
+	 }
+	 temp[n][0] = x;
+	 
+	 //Очистка begin
+	 for (size_t i = 0; i < n; i++)
+	 {
+		 delete begin[i];
+	 }
+	 delete begin;
+	 begin = temp;
+	 n++;
+ }
+
 
 Matrix& Matrix::operator+(Matrix& temp) {
 	if (this->n != temp.n) {
@@ -978,15 +1036,21 @@ Matrix& Matrix::operator-(float ws)
 
 Matrix& Matrix::operator=(Matrix& temp) {
 	Matrix A(temp);
-	for (int i = 0; i < n; i++)
-		delete begin[i];
-	delete begin;
-	this->n = temp.n;
-	this->m = temp.m;
-	begin = new float*[n];
-	for (int i = 0; i < n; i++) {
+	if (begin != nullptr) {
+		for (size_t i = 0; i < n; i++)
+		{
+			delete begin[i];
+		}
+		delete begin;
+	}
+	n = A.n;
+	m = A.m;
+	begin = new float* [n];
+	for (size_t i = 0; i < n; i++)
+	{
 		begin[i] = new float[m];
-		for (int j = 0; j < m; j++) {
+		for (size_t j = 0; j < m; j++)
+		{
 			begin[i][j] = A.begin[i][j];
 		}
 	}

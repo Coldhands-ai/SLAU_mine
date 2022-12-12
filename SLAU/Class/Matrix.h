@@ -43,6 +43,7 @@ public:
 	Matrix& MethodSeidel(Matrix&, const float);
 	Matrix& MethodNewton(Matrix&, const float);
 	Matrix& Nevyazka3();
+	Matrix& MatrixByVector(Matrix&, Matrix&);
 	float operator[](int);
 	float F1_S(float,float,float);
 	float F2_S(float,float,float);
@@ -54,5 +55,6 @@ public:
 	float max(float,float);
 	float Norma(void);
 	float Norma2Vector(void);
+	void append(float);
 };
 
