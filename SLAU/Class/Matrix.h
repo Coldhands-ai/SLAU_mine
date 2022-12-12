@@ -39,6 +39,13 @@ public:
 	Matrix& MethodGaussZeydel(Matrix&, Matrix&, const float);
 	Matrix& Integer(void);
 	Matrix& Okrugl(void);
+	Matrix& MethodYakobi(float, float, float);
+	float F1_S(float,float,float);
+	float F2_S(float,float,float);
+	float F3_S(float,float,float);
+	float F1(float,float,float);
+	float F2(float,float,float);
+	float F3(float,float,float);
 	float Norma(void);
 	float Norma2Vector(void);
 };

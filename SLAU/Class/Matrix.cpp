@@ -751,6 +751,36 @@ void Matrix::Show(int x) {
 	 return *X;
  }
 
+ float Matrix::F1_S(float x, float y, float z)
+ {
+	 return 0.1-pow(x,2) + 2*y*z;
+ }
+
+ float Matrix::F2_S(float x, float y, float z)
+ {
+	 return -0.2 + pow(y,2) -3*x*z;
+ }
+
+ float Matrix::F3_S(float x, float y, float z)
+ {
+	 return 0.3 - pow(z,2) - 2*x*y;
+ }
+
+ float Matrix::F1(float x, float y, float z)
+ {
+	 return x + pow(x,2)-2*y*z-0.1;
+ }
+
+ float Matrix::F2(float x, float y, float z)
+ {
+	 return y - pow(y, 2) + 3 * x * z + 0.2;
+ }
+
+ float Matrix::F3(float x, float y, float z)
+ {
+	 return z + pow(z, 2) + 2 * x * y - 0.3;
+ }
+
  float Matrix::Norma(void)
  {
 	 float norm = 0;
