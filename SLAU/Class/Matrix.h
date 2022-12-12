@@ -40,12 +40,18 @@ public:
 	Matrix& Integer(void);
 	Matrix& Okrugl(void);
 	Matrix& MethodYakobi(float, float, float);
+	Matrix& MethodSeidel(Matrix&, const float);
+	Matrix& MethodNewton(Matrix&, const float);
+	Matrix& Nevyazka3();
+	float operator[](int);
 	float F1_S(float,float,float);
 	float F2_S(float,float,float);
 	float F3_S(float,float,float);
 	float F1(float,float,float);
 	float F2(float,float,float);
 	float F3(float,float,float);
+	float max(Matrix&,Matrix&);
+	float max(float,float);
 	float Norma(void);
 	float Norma2Vector(void);
 };

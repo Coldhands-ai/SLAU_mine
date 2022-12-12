@@ -769,6 +769,75 @@ void Matrix::Show(int x) {
 	 return *temp;
  }
 
+ Matrix& Matrix::MethodSeidel(Matrix& TX,const float eps)
+ {
+	 Matrix* newX = new Matrix();
+	 Matrix lastX = TX;
+	 newX->CreateNULL(lastX.n,1);
+
+	 newX->begin[0][0] = F1_S(lastX.begin[0][0], lastX.begin[1][0], lastX.begin[2][0]);
+	 newX->begin[1][0] = F2_S(newX->begin[0][0], lastX.begin[1][0], lastX.begin[2][0]);
+	 newX->begin[2][0] = F3_S(newX->begin[0][0], newX->begin[1][0], lastX.begin[2][0]);
+
+	 int countoperation = 0;
+	 
+	 /*cout << "newX: "<<endl;
+	 newX->Show();
+	 cout << "lastX: " << endl;
+	 lastX.Show();*/
+
+	 while (max(*newX, lastX) > eps) {
+		 lastX = *newX;
+		 newX->begin[0][0] = F1_S(lastX.begin[0][0], lastX.begin[1][0], lastX.begin[2][0]);
+		 newX->begin[1][0] = F2_S(newX->begin[0][0], lastX.begin[1][0], lastX.begin[2][0]);
+		 newX->begin[2][0] = F3_S(newX->begin[0][0], newX->begin[1][0], lastX.begin[2][0]);
+		 countoperation++;
+	 }
+	 cout << "Количество операций: " << countoperation << endl;
+	 return *newX;
+ }
+
+ Matrix& Matrix::MethodNewton(Matrix& R, const float eps)
+ {
+	 Matrix* newX = new Matrix();
+	 newX->CreateNULL(R.n,1);
+	 Matrix lastX = R;
+
+	 int countiteration = 0;
+
+	 Matrix inv_J = (MethodYakobi(lastX.begin[0][0], lastX.begin[1][0], lastX.begin[2][0])).InverseGauss();
+	 
+	 Matrix f;
+	 f.CreateNULL(3, 0);
+	 f.begin[0][0] = F1(lastX[0], lastX[1], lastX[2]);
+	 f.begin[1][0] = F2(lastX[0], lastX[1], lastX[2]);
+	 f.begin[2][0] = F3(lastX[0], lastX[1], lastX[2]);
+	 //mul = matrix_by_vector(inv_J, f);
+	 return *newX;
+ }
+
+ Matrix& Matrix::Nevyazka3()
+ {
+	 Matrix* X = new Matrix();
+	 X->CreateNULL(3, 1);
+
+	 float x = (*this)[0];
+	 float y = (*this)[1];
+	 float z = (*this)[2];
+
+	 X->begin[0][0] = F1(x, y, z);
+	 X->begin[1][0] = F2(x, y, z);
+	 X->begin[2][0] = F3(x, y, z);
+
+	 return *X;
+ }
+
+ float Matrix::operator[](int n)
+ {
+	 if (m < 1) throw "m<1";
+	 return begin[n][0];
+ }
+
  float Matrix::F1_S(float x, float y, float z)
  {
 	 return 0.1-pow(x,2) + 2*y*z;
@@ -797,6 +866,20 @@ void Matrix::Show(int x) {
  float Matrix::F3(float x, float y, float z)
  {
 	 return z + pow(z, 2) + 2 * x * y - 0.3;
+ }
+
+ float Matrix::max(float a, float b) {
+	 return (a >= b) ? (a) : (b);
+ }
+
+ float Matrix::max(Matrix&A,Matrix&B)
+ {
+	 float x = abs(A.begin[0][0] - B.begin[0][0]);
+	 for (size_t i = 0; i < A.n; i++)
+	 {
+		 x = max(x, abs(A.begin[i][0] - B.begin[i][0]));
+	 }
+	 return x;
  }
 
  float Matrix::Norma(void)
