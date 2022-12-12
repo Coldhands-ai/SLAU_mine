@@ -828,8 +828,8 @@ void Matrix::Show(int x) {
 		 delete newX;
 		 newX = &(lastX - f);
 		 countoperation++;
-		 cout << "ќбратна€ матрица к якоби на " << countoperation << " итерации:\n";
-		 inv_J.Show();
+		 //cout << "ќбратна€ матрица к якоби на " << countoperation << " итерации:\n";
+		 //nv_J.Show();
 	 }
 	 cout << " оличество операций MethodNewton: " << countoperation << endl;
 	 return *newX;
