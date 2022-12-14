@@ -30,17 +30,17 @@ Matrix::Matrix(const Matrix& temp) {
 	this->m = temp.m;
 	this->det = temp.det;
 	this->permut = temp.permut;
-	this->begin = new float * [this->n];
+	this->begin = new double * [this->n];
 
 	for (int i = 0; i < this->n; i++) {
-		this->begin[i] = new float [this->m] ;
+		this->begin[i] = new double [this->m] ;
 		for (int j = 0; j < this->m; j++) {
 			this->begin[i][j] = temp.begin[i][j];
 		}
 	}
 }
 
-Matrix::Matrix(float** temp, int n, int m)
+Matrix::Matrix(double** temp, int n, int m)
 {
 	this->n = n;
 	this->m = m;
@@ -48,10 +48,10 @@ Matrix::Matrix(float** temp, int n, int m)
 	this->permut = 0;
 
 
-	begin = new float* [n];
+	begin = new double* [n];
 	for (size_t i = 0; i < n; i++)
 	{
-		begin[i] = new float[m];
+		begin[i] = new double[m];
 
 		for (size_t j = 0; j < m; j++)
 		{
@@ -70,7 +70,7 @@ Matrix::~Matrix(void){
 	}
 }
 
-float Matrix::GetDet()
+double Matrix::GetDet()
 {
 	return det;
 }
@@ -89,7 +89,7 @@ void Matrix :: Create() {
 		cout << "m: "; cin >> m;
 		Create(n, m);
 	case(2):
-		cout << "Введите путь к файлу.\nФайл должен иметь вид: int n int m float[n][m]\nСперва имеет 2 целых числа, а потом матрицу. Путь << ";
+		cout << "Введите путь к файлу.\nФайл должен иметь вид: int n int m double[n][m]\nСперва имеет 2 целых числа, а потом матрицу. Путь << ";
 		cin>>a;
 		ReadFile(a);
 		break;
@@ -111,7 +111,7 @@ void Matrix::Create(char* S) {
 	this->n = n;
 	this->m = m;
 	if(begin == nullptr)
-		begin = new float* [n];
+		begin = new double* [n];
 	
 	cout << "1) Заполнить самому\n2) Заполнить случайным образом\n>> ";
 	int x;
@@ -121,7 +121,7 @@ void Matrix::Create(char* S) {
 	case(1):
 		for (int i = 0; i < n; i++)
 		{
-			begin[i] = new float[m];
+			begin[i] = new double[m];
 			for (int j = 0; j < m; j++)
 			{
 				cout << "[" << i << "][" << j << "] = ";
@@ -133,7 +133,7 @@ void Matrix::Create(char* S) {
 	case(2):
 		for (int i = 0; i < n; i++)
 		{
-			begin[i] = new float[m];
+			begin[i] = new double[m];
 			for (int j = 0; j < m; j++)
 			{
 				//cout << "[" << i << "][" << j << "] = "; 
@@ -148,7 +148,7 @@ void Matrix::Create(char* S) {
 
 		for (int i = 0; i < n; i++)
 		{
-			begin[i] = new float[m];
+			begin[i] = new double[m];
 			for (int j = 0; j < m; j++)
 			{
 				//cout << "[" << i << "][" << j << "] = "; 
@@ -168,10 +168,10 @@ void Matrix::Create(char* S) {
 	this->n = n;
 	this->m = m;
 	if (begin == nullptr)
-		begin = new float* [n];
+		begin = new double* [n];
 	for (int i = 0; i < n; i++)
 	{
-		begin[i] = new float[m];
+		begin[i] = new double[m];
 		for (int j = 0; j < m; j++)
 		{
 			begin[i][j]=0;
@@ -186,10 +186,10 @@ void Matrix::Create(char* S) {
 	this->n = n;
 	this->m = n;
 	if (begin == nullptr)
-		begin = new float* [n];
+		begin = new double* [n];
 	for (int i = 0; i < n; i++)
 	{
-		begin[i] = new float[m];
+		begin[i] = new double[m];
 		for (int j = 0; j < m; j++)
 		{
 			if (i == j) begin[i][j] = 1;
@@ -273,7 +273,7 @@ void Matrix::Show(int x) {
 	 Matrix right = rightTemp;
 	 Matrix temp(*this);
 	 // Создаем решение СЛАУ
-	 float a12 = 0;
+	 double a12 = 0;
 
 	 for (int i = 0; i < n-1; ++i) {
 		 // Инициализация главного элемента. Изначально он находится в матрице А с индексами [0][0]
@@ -338,7 +338,7 @@ void Matrix::Show(int x) {
 
 	 // Нахождение решения 'x' системы линейных алгебраических уравнений Ax=f
 	 //for (int i = n - 1; i >= 0; --i) {
-		// float coeff_multiply = 0.0;
+		// double coeff_multiply = 0.0;
 		// for (int j = i; j < n; ++j) {
 		//	 coeff_multiply += temp.begin[i][j] * X->begin[j][0];
 		//	 X->begin[i][0] = (right.begin[i][0] - coeff_multiply) / temp.begin[i][i];
@@ -374,7 +374,7 @@ void Matrix::Show(int x) {
 	 // Создаем решение СЛАУ
 	 Matrix* X = new Matrix(); // Матрица - x
 	 X->CreateNULL(n, 1); // Создаем на n чисел
-	 float a12 = 0; // Для изменения местами 2-х чисел
+	 double a12 = 0; // Для изменения местами 2-х чисел
 	 double MainEl; // Главный элемент в строке
 	 int iMainEl; // Индекс главного элемента
 
@@ -427,7 +427,7 @@ void Matrix::Show(int x) {
 
 	 // Нахождение решения 'x' системы линейных алгебраических уравнений Ax=f
 	 for (int i = n - 1; i >= 0; --i) {
-		 float coeff_multiply = 0.0;
+		 double coeff_multiply = 0.0;
 		 for (int j = i; j < n; ++j) {
 			 coeff_multiply += temp.begin[i][j] * X->begin[j][0];
 		 }
@@ -490,7 +490,7 @@ void Matrix::Show(int x) {
 	 Matrix* Y=new Matrix();
 	 Y->CreateNULL(n, n);
 
-	 float** A1 = nullptr;
+	 double** A1 = nullptr;
 
 	 for (size_t i1 = 0; i1 < n; i1++)
 	 {
@@ -503,10 +503,10 @@ void Matrix::Show(int x) {
 			 A1 = nullptr;
 		 }
 		 
-		 A1 = new float* [temp.n];
+		 A1 = new double* [temp.n];
 		 for (size_t i = 0; i < n; i++)
 		 {
-			 A1[i] = new float[1];
+			 A1[i] = new double[1];
 			 A1[i][0] = temp.begin[i1][i];
 		 }
 		 R = new Matrix(A1, n, 1);
@@ -590,12 +590,12 @@ void Matrix::Show(int x) {
 	 return *x;
  }
 
- Matrix& Matrix::MethodYakobi(Matrix& F, Matrix& x, const float eps)
+ Matrix& Matrix::MethodYakobi(Matrix& F, Matrix& x, const double eps)
  {
 	 Matrix TempX;
 	 TempX.CreateNULL(n, 1);
 	 Matrix* y = new Matrix(x);
-	 float norm = 0;
+	 double norm = 0;
 	 size_t countoperation = 0;
 	 do {
 		 countoperation++;
@@ -700,14 +700,14 @@ void Matrix::Show(int x) {
 	 return *x;
  }
 
- Matrix& Matrix::MethodGaussZeydel(Matrix& F, Matrix& x,const float eps)
+ Matrix& Matrix::MethodGaussZeydel(Matrix& F, Matrix& x,const double eps)
  {
 	 Matrix TempX; // Будем сохранять предыдущий вектор
 	 TempX.CreateNULL(n, 1);
 	 Matrix* y = new Matrix(x); // Будем получать новый вектор
-	 float norm = 0;
+	 double norm = 0;
 	 size_t countoperation = 0;
-	 float var = 0;
+	 double var = 0;
 	 do {
 		 countoperation++;
 		 for (size_t i = 0; i < n; i++)
@@ -751,7 +751,7 @@ void Matrix::Show(int x) {
 	 return *X;
  }
 
- Matrix& Matrix::MethodYakobi(float x, float y, float z)
+ Matrix& Matrix::MethodYakobi(double x, double y, double z)
  {
 	 Matrix* temp = new Matrix();
 	 temp->CreateNULL(3,3);
@@ -769,7 +769,7 @@ void Matrix::Show(int x) {
 	 return *temp;
  }
 
- Matrix& Matrix::MethodSeidel(Matrix& TX,const float eps)
+ Matrix& Matrix::MethodSeidel(Matrix& TX,const double eps)
  {
 	 Matrix* newX = new Matrix();
 	 Matrix lastX = TX;
@@ -797,7 +797,7 @@ void Matrix::Show(int x) {
 	 return *newX;
  }
 
- Matrix& Matrix::MethodNewton(Matrix& R, const float eps)
+ Matrix& Matrix::MethodNewton(Matrix& R, const double eps)
  {
 	 Matrix* newX;
 	 Matrix lastX = R;
@@ -840,9 +840,9 @@ void Matrix::Show(int x) {
 	 Matrix* X = new Matrix();
 	 X->CreateNULL(3, 1);
 
-	 float x = (*this)[0];
-	 float y = (*this)[1];
-	 float z = (*this)[2];
+	 double x = (*this)[0];
+	 double y = (*this)[1];
+	 double z = (*this)[2];
 
 	 X->begin[0][0] = F1(x, y, z);
 	 X->begin[1][0] = F2(x, y, z);
@@ -855,7 +855,7 @@ void Matrix::Show(int x) {
  {
 	 Matrix* result = new Matrix();
 	 result->CreateNULL(G.n, 1);
-	 float total = 0;
+	 double total = 0;
 	 
 	 for (size_t i = 0; i < G.n; i++)
 	 {
@@ -868,49 +868,49 @@ void Matrix::Show(int x) {
 	 return *result;
  }
 
- float Matrix::operator[](int n)
+ double Matrix::operator[](int n)
  {
 	 if (m < 1) throw "m<1";
 	 return begin[n][0];
  }
 
- float Matrix::F1_S(float x, float y, float z)
+ double Matrix::F1_S(double x, double y, double z)
  {
 	 return 0.1-pow(x,2) + 2*y*z;
  }
 
- float Matrix::F2_S(float x, float y, float z)
+ double Matrix::F2_S(double x, double y, double z)
  {
 	 return -0.2 + pow(y,2) -3*x*z;
  }
 
- float Matrix::F3_S(float x, float y, float z)
+ double Matrix::F3_S(double x, double y, double z)
  {
 	 return 0.3 - pow(z,2) - 2*x*y;
  }
 
- float Matrix::F1(float x, float y, float z)
+ double Matrix::F1(double x, double y, double z)
  {
 	 return x + pow(x,2)-2*y*z-0.1;
  }
 
- float Matrix::F2(float x, float y, float z)
+ double Matrix::F2(double x, double y, double z)
  {
 	 return y - pow(y, 2) + 3 * x * z + 0.2;
  }
 
- float Matrix::F3(float x, float y, float z)
+ double Matrix::F3(double x, double y, double z)
  {
 	 return z + pow(z, 2) + 2 * x * y - 0.3;
  }
 
- float Matrix::max(float a, float b) {
+ double Matrix::max(double a, double b) {
 	 return (a >= b) ? (a) : (b);
  }
 
- float Matrix::max(Matrix&A,Matrix&B)
+ double Matrix::max(Matrix&A,Matrix&B)
  {
-	 float x = abs(A.begin[0][0] - B.begin[0][0]);
+	 double x = abs(A.begin[0][0] - B.begin[0][0]);
 	 for (size_t i = 0; i < A.n; i++)
 	 {
 		 x = max(x, abs(A.begin[i][0] - B.begin[i][0]));
@@ -918,10 +918,10 @@ void Matrix::Show(int x) {
 	 return x;
  }
 
- float Matrix::Norma(void)
+ double Matrix::Norma(void)
  {
-	 float norm = 0;
-	 float sum = 0;
+	 double norm = 0;
+	 double sum = 0;
 	 for (size_t i = 0; i < n; i++)
 	 {
 		 sum = 0;
@@ -935,10 +935,10 @@ void Matrix::Show(int x) {
 	 return norm;
  }
 
- float Matrix::Norma2Vector(void)
+ double Matrix::Norma2Vector(void)
  {
 	 // sqrt(sum(вектор))
-	 float sum = 0;
+	 double sum = 0;
 	 for (size_t i = 0; i < n; i++)
 	 {
 		 sum += pow(begin[i][0],2);
@@ -947,14 +947,14 @@ void Matrix::Show(int x) {
 	 return sum;
  }
 
- void Matrix::append(float x)
+ void Matrix::append(double x)
  {
 	 if (m != 1)throw"no vector";
 	 // Пересоздаем и добавляем
-	 float** temp = new float* [n + 1];
+	 double** temp = new double* [n + 1];
 	 for (size_t i = 0; i < n; i++)
 	 {
-		 temp[i] = new float[1];
+		 temp[i] = new double[1];
 		 temp[i] = begin[i];
 	 }
 	 temp[n][0] = x;
@@ -988,7 +988,7 @@ Matrix& Matrix::operator+(Matrix& temp) {
 	return *A;
 }
 
-Matrix& Matrix::operator+(float ws)
+Matrix& Matrix::operator+(double ws)
 {
 	Matrix* X = new Matrix(*this);
 	if (begin == nullptr) throw "Matrix is none";
@@ -1020,7 +1020,7 @@ Matrix& Matrix::operator-(Matrix& temp) {
 	return *A;
 }
 
-Matrix& Matrix::operator-(float ws)
+Matrix& Matrix::operator-(double ws)
 {
 	Matrix* X = new Matrix(*this);
 	if (begin == nullptr) throw "Matrix is none";
@@ -1045,10 +1045,10 @@ Matrix& Matrix::operator=(Matrix& temp) {
 	}
 	n = A.n;
 	m = A.m;
-	begin = new float* [n];
+	begin = new double* [n];
 	for (size_t i = 0; i < n; i++)
 	{
-		begin[i] = new float[m];
+		begin[i] = new double[m];
 		for (size_t j = 0; j < m; j++)
 		{
 			begin[i][j] = A.begin[i][j];
@@ -1074,10 +1074,10 @@ void Matrix::ReadFile(char* S) {
 
 	//cout << n << " " << m << endl;
 
-	float** begin = new float* [n];
+	double** begin = new double* [n];
 	for (size_t i = 0; i < n; i++)
 	{
-		begin[i] = new float[m];
+		begin[i] = new double[m];
 		for (size_t j = 0; j < m; j++)
 		{
 			f >> begin[i][j];
@@ -1101,10 +1101,10 @@ void Matrix::ReadFile(char* S) {
 
 Matrix& Matrix::Transp(void)
 {
-	float** newbegin = new float* [m];
+	double** newbegin = new double* [m];
 	
 	for (int i = 0; i < m; i++) {
-		newbegin[i] = new float[n];
+		newbegin[i] = new double[n];
 		for (int j = 0; j < n; j++) {
 			newbegin[i][j] = begin[j][i];
 		}
