@@ -54,7 +54,7 @@ public:
 	double max(Matrix&,Matrix&);
 	double max(double,double);
 	double Norma(void);
-	double Norma2Vector(void);
+	double NormaVector(int);
 	void append(double);
 };
 

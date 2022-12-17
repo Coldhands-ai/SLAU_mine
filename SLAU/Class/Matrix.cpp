@@ -610,10 +610,10 @@ void Matrix::Show(int x) {
 		 //cout << "TempX: [" << countoperation << endl;
 		 //TempX.Show(20);
 		  if (norm == 0)
-			  norm = fabs(y->Norma2Vector() - TempX.Norma2Vector());
+			  norm = fabs(y->NormaVector(2) - TempX.NormaVector(2));
 
-		  if (norm > fabs(y->Norma2Vector() - TempX.Norma2Vector()))
-			  norm = fabs(y->Norma2Vector() - TempX.Norma2Vector());
+		  if (norm > fabs(y->NormaVector(2) - TempX.NormaVector(2)))
+			  norm = fabs(y->NormaVector(2) - TempX.NormaVector(2));
 
 		  for (size_t i = 0; i < n; i++)
 		  {
@@ -721,7 +721,7 @@ void Matrix::Show(int x) {
 				if (j != i)	
 					var += (begin[i][j] * y->begin[j][0]); // Вычисляем коэффициент для нового вектора
 			 y->begin[i][0] = (F.begin[i][0] - var) / begin[i][i];
-			 norm = fabs(y->Norma2Vector() - TempX.Norma2Vector()); // Вычисляем векторную норму
+			 norm = fabs(y->NormaVector(1) - TempX.NormaVector(1)); // Вычисляем векторную норму
 		 }
 	 } while (norm > eps);
 	 cout << "Количество операций: " << countoperation << endl;
@@ -733,7 +733,10 @@ void Matrix::Show(int x) {
 	 Matrix* X = new Matrix(*this);
 	 for (size_t i = 0; i < n; i++)
 	 {
-		 X->begin[i][0] = (int)(X->begin[i][0]);
+		 for (size_t j = 0; j < m; j++)
+		 {
+			 X->begin[i][j] = int(begin[i][j]);
+		 }
 	 }
 	 return *X;
  }
@@ -935,17 +938,27 @@ void Matrix::Show(int x) {
 	 return norm;
  }
 
- double Matrix::Norma2Vector(void)
+ double Matrix::NormaVector(int x)
  {
-	 // sqrt(sum(вектор))
 	 double sum = 0;
-	 for (size_t i = 0; i < n; i++)
-	 {
-		 sum += pow(begin[i][0],2);
+	 switch (x) {
+	 case 1:
+		 for (size_t i = 0; i < n; i++)
+		 {
+			 sum += abs(begin[i][0]);
+		 }
+		 break;
+	 case 2:
+		 for (size_t i = 0; i < n; i++)
+		 {
+			 sum += pow(begin[i][0], 2);
+		 }
+		 sum = sqrt(sum);
+		 break;
 	 }
-	 sum = sqrt(sum);
 	 return sum;
  }
+	 
 
  void Matrix::append(double x)
  {
