@@ -703,26 +703,24 @@ void Matrix::Show(int x) {
  Matrix& Matrix::MethodGaussZeydel(Matrix& F, Matrix& x,const double eps)
  {
 	 Matrix TempX; // Будем сохранять предыдущий вектор
-	 TempX.CreateNULL(n, 1);
 	 Matrix* y = new Matrix(x); // Будем получать новый вектор
 	 double norm = 0;
 	 size_t countoperation = 0;
 	 double var = 0;
 	 do {
 		 countoperation++;
-		 for (size_t i = 0; i < n; i++)
-		 {
-			 TempX.begin[i][0] = y->begin[i][0]; // Сохраняем новый в предыдущий тк цикл начался заново
-		 }
+		 TempX = *y;
 		 for (size_t i = 0; i < n; i++)
 		 {
 			 var = 0;
 			 for (size_t j = 0; j < n; j++)
-				if (j != i)	
+				if (j != i)	// Сумма A[i,j] * X[j](k+1) |j=1,..,i-1| + A[i,j] * X[j](k) |j=i+1,..,n|
 					var += (begin[i][j] * y->begin[j][0]); // Вычисляем коэффициент для нового вектора
-			 y->begin[i][0] = (F.begin[i][0] - var) / begin[i][i];
-			 norm = fabs(y->NormaVector(1) - TempX.NormaVector(1)); // Вычисляем векторную норму
+			 y->begin[i][0] = (F.begin[i][0] - var) / begin[i][i]; // (B[i] - var)/A[i][i]
+			 norm = abs(y->NormaVector(0)-TempX.NormaVector(0)); // Вычисляем векторную норму
+			 //cout << "norma: "<<norm << endl;
 		 }
+		 //y->Show(8);
 	 } while (norm > eps);
 	 cout << "Количество операций: " << countoperation << endl;
 	 return *y;
@@ -954,6 +952,14 @@ void Matrix::Show(int x) {
 			 sum += pow(begin[i][0], 2);
 		 }
 		 sum = sqrt(sum);
+		 break;
+	 default:
+		 sum = abs(begin[0][0]);
+		 for (size_t i = 0; i < n; i++)
+		 {
+			 if (abs(begin[i][0]) > sum)
+				 sum = abs(begin[i][0]);
+		 }
 		 break;
 	 }
 	 return sum;
