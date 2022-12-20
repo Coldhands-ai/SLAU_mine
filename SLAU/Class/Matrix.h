@@ -17,9 +17,13 @@ public:
 	void Create(); // Можно вытащить массив из файла
 	void CreateDiagonal(int); // Можно вытащить массив из файла
 	void Create(char*); // Вытащить массив из файла
-	void CreateNULL(int, int); // создание пустого
+	void CreateNULL(int, int); // создание Нулевое
+	void CreateOnes(int, int); // создание Единичное
+	void CreatePoly(char,int);
 	void Show();
+	void Show(Matrix&);
 	void Show(int);
+	void Show(Matrix&,int);
 	void ReadFile(char*);
 	Matrix& Transp(void);
 	Matrix& operator+(Matrix&);
@@ -44,6 +48,12 @@ public:
 	Matrix& MethodNewton(Matrix&, const double);
 	Matrix& Nevyazka3();
 	Matrix& MatrixByVector(Matrix&, Matrix&);
+	Matrix& Pkn(int,int,int);
+	Matrix& Solve_coef(Matrix&, int, int);
+	int GetN();
+	int GetM();
+	double C(int, int);
+	double ts(int,int);
 	double operator[](int);
 	double F1_S(double,double,double);
 	double F2_S(double,double,double);
@@ -53,6 +63,7 @@ public:
 	double F3(double,double,double);
 	double max(Matrix&,Matrix&);
 	double max(double,double);
+	double sum(void);
 	double Norma(void);
 	double NormaVector(int);
 	void append(double);

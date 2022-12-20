@@ -178,6 +178,64 @@ void Matrix::Create(char* S) {
 		}
 	}
 }
+
+ void Matrix::CreateOnes(int n, int m)
+ {
+	 if (n < 1 || m < 1)
+		 throw "n|m < 1";
+	 this->n = n;
+	 this->m = m;
+	 if (begin == nullptr)
+		 begin = new double* [n];
+	 for (int i = 0; i < n; i++)
+	 {
+		 begin[i] = new double[m];
+		 for (int j = 0; j < m; j++)
+		 {
+			 begin[i][j] = 1;
+		 }
+	 }
+ }
+
+ void Matrix::CreatePoly(char a,int n)
+ {
+	 if (begin != nullptr) {
+		 for (size_t i = 0; i < n; i++)
+		 {
+			 delete begin[i];
+		 }
+		 delete begin;
+	 }
+	 this->m = 1;
+	 this->n = 10;
+	 begin = new double* [10];
+
+	 switch (a) {
+	 case 'x':
+		 for (size_t i = 0; i < 10; i++)
+		 {
+			 begin[i] = new double[1];
+			 begin[i][0] = 0.1 * (3 + i + n);
+		 }
+		 break;
+	 case 'y':
+		 for (size_t i = 0; i < 10; i++)
+		 {
+			 begin[i] = new double[1];
+		 }
+		 begin[0][0] = 0.5913;
+		 begin[1][0] = 0.63+n/17;
+		 begin[2][0] = 0.7162;
+		 begin[3][0] = 0.8731;
+		 begin[4][0] = 0.9574;
+		 begin[5][0] = 1.8-cos(n/11);
+		 begin[6][0] = 1.3561;
+		 begin[7][0] = 1.2738;
+		 begin[8][0] = 1.1+n/29;
+		 begin[9][0] = 1.1672;
+		 break;
+	 }
+ }
  
  void Matrix::CreateDiagonal(int n) {
 	//cout << "Заполнение массива\n";
@@ -204,6 +262,10 @@ void Matrix::Show() {
 	Show(2);
 }
 
+void Matrix::Show(Matrix &temp) {
+	Show(temp, 2);
+}
+
 void Matrix::Show(int x) {
 	//cout << "Вывод массива\n";
 	cout << fixed;
@@ -216,6 +278,22 @@ void Matrix::Show(int x) {
 			cout << "[" << begin[i][j] << "]\t";
 		}
 		cout << endl;
+	}
+}
+
+void Matrix::Show(Matrix& temp,int x) {
+	if (n != temp.n || m != temp.m)
+		throw "n or m != temp.n or temp.m";
+
+	cout << fixed;
+	cout.precision(x);
+
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+		{
+			cout << "F(" << temp.begin[i][j] << ") = " << begin[i][j] << endl;
+		}
 	}
 }
 
@@ -869,6 +947,118 @@ void Matrix::Show(int x) {
 	 return *result;
  }
 
+ Matrix& Matrix::Pkn(int k, int N, int t)
+ {
+	 N--;
+	 Matrix* ns = new Matrix();
+	 ns->CreateOnes(N+1, 1);
+	 for (size_t i = 1; i <= N; i++)
+	 {
+		 ns->begin[i][0] = ns->begin[i - 1][0] * (N - i + 1);
+	 }
+
+	 Matrix* ts = new Matrix();
+	 ts->CreateOnes(k + 1, 1);
+	 for (size_t i = 1; i <= k; i++)
+	 {
+		 ts->begin[i][0] = ts->begin[i - 1][0] * (t - i + 1);
+	 }
+
+	 double dl = (2 * k + 1) * ns->begin[k][0];
+	 double num = 1;
+	 double stp = (N + k + 1);
+	 
+	 while (stp > N) {
+		 num *= stp;
+		 stp--;
+	 }
+	 double k_norm = sqrt(num / dl);
+
+	 Matrix* p = new Matrix();
+	 p->CreateNULL(k + 1, 1);
+	 int s = 0;
+
+	 double p_is;
+
+	 for (size_t s = 0; s <= k; s++)
+	 {
+		 p->begin[s][0] = pow(-1, s) * C(s, k) * C(s, k + s) / ns->begin[s][0];
+	 }
+	 /*
+	 double sum = 0,pr=1;
+	 for (size_t k = 0; k < n; k++)
+	 {
+		 for (size_t s = 0; s <= n; s++)
+		 {
+			 P->begin[k][0] += pow(-1, s) * C(s, k) * C(s, k + s) * ts(t, s) * ts(n, s);
+		 }
+		 //cout<<k<<"] " << P->begin[k][0] << endl;
+	 }*/
+	 for (size_t i = 0; i < k+1; i++)
+	 {
+		 p->begin[i][0] = p->begin[i][0] * ts->begin[i][0];
+	 }
+	 return (*p);
+ }
+
+ Matrix& Matrix::Solve_coef(Matrix& X, int N, int m) // Вычисление коэф Фурье
+ {
+	 N--;
+	 Matrix* P = new Matrix();
+	 P->CreateNULL(m + 1, 1);
+	 Matrix* A;
+
+	 for (size_t i = 0; i < m+1; i++)
+	 {
+		 for (size_t j = 0; j < N+1; j++)
+		 {
+			 A=&(Pkn(i, N + 1, j));
+			 P->begin[i][0] = X.begin[j][0]*A->sum();
+			 delete A;
+		 }
+	 }
+	 P->begin[0][0] = X.sum() / (N + 1);
+	 return *P;
+ }
+
+ int Matrix::GetN()
+ {
+	 return n;
+ }
+
+ int Matrix::GetM()
+ {
+	 return m;
+ }
+
+ double Matrix::C(int k, int n)
+ {
+	 if (k > n) throw "!k<=n!";
+	 if (n == 0) return 0;
+	 if (k == 0 || k == n) return 1;
+	 if (k == 1 || k==n-1) return n;
+	 double ot = 1;
+	 for (size_t i = k+1; i <= n; i++)
+	 {
+		 ot *= i;
+	 }
+	 for (size_t i = 1; i <= n-k; i++)
+	 {
+		 ot /= i;
+	 }
+	 return ot;
+ }
+
+ double Matrix::ts(int t, int s)
+ {
+	 double ot = 1;
+	 for (size_t i = t-s+1; i <= t; i++)
+	 {
+		 ot *= i;
+	 }
+	 return ot;
+ }
+
  double Matrix::operator[](int n)
  {
 	 if (m < 1) throw "m<1";
@@ -907,6 +1097,19 @@ void Matrix::Show(int x) {
 
  double Matrix::max(double a, double b) {
 	 return (a >= b) ? (a) : (b);
+ }
+
+ double Matrix::sum(void)
+ {
+	 double sum = 0;
+	 for (size_t i = 0; i < n; i++)
+	 {
+		 for (size_t j = 0; j < m; j++)
+		 {
+			 sum += begin[i][j];
+		 }
+	 }
+	 return sum;
  }
 
  double Matrix::max(Matrix&A,Matrix&B)

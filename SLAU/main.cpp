@@ -20,7 +20,7 @@ int main() {
 	//A.Show();
 	//B.Show();
 
-	try {
+	/*try {
 
 		cout << "Method KVKornya: " << endl;
 		Matrix* X1 = &(A.MethodKVKor(f));
@@ -44,7 +44,7 @@ int main() {
 	}
 	catch (...) {
 		cout << "Error" << endl;
-	}
+	}*/
 
 
 	/*try { 
@@ -69,5 +69,28 @@ int main() {
 		cout << "Error" << endl;
 	}*/
 
+	try {
+		const int m = 3;
+		const int n = 2;
+		cout << "Method : " << endl;
+		Matrix* X = new Matrix();
+		X->CreatePoly('x',n);
+		Matrix* Y = new Matrix();
+		Y->CreatePoly('y',n);
+		cout << "X: " << endl;
+		cout << "Y: " << endl;
+		Y->Show(*X);
+		Matrix* Q=&(Y->Solve_coef(*X,X->GetN(), m));
+		cout << "Q(t) = ";
+		for (size_t i = 0; i < m; i++)
+		{
+			cout << (*Q)[i] << "+P("<< i <<","<< X->GetN() <<") ";
+		}
+	}
+	catch (...) {
+		cout << "Error" << endl;
+	}
+	
+	return 0;
 }
 
