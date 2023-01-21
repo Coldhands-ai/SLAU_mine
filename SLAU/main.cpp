@@ -20,7 +20,7 @@ int main() {
 	//A.Show();
 	//B.Show();
 
-	/*try {
+	try {
 
 		cout << "Method KVKornya: " << endl;
 		Matrix* X1 = &(A.MethodKVKor(f));
@@ -30,9 +30,7 @@ int main() {
 		Matrix* NX1 = &(A*(*X1)-f);
 		NX1->Show(14);
 
-		X1=&(X1->Integer());
-
-		X1=&(*X1+4);
+		X1->Integer();
 
 		cout << "Method Zeydel: " << endl;
 		Matrix* X2 = &(A.MethodGaussZeydel(f,*X1,0.000001));
@@ -41,10 +39,12 @@ int main() {
 		cout << "Nevyazka: " << endl;
 		Matrix* NX2 = &(A * (*X2) - f);
 		NX2->Show(14);
+
+		cout << "M(A) = " << A.Norma() * A.InverseGauss().Norma() << endl;
 	}
 	catch (...) {
 		cout << "Error" << endl;
-	}*/
+	}
 
 
 	/*try { 
@@ -69,7 +69,7 @@ int main() {
 		cout << "Error" << endl;
 	}*/
 
-	try {
+	/*try {
 		const int m = 3;
 		const int n = 2;
 		cout << "Method : " << endl;
@@ -89,7 +89,7 @@ int main() {
 	}
 	catch (...) {
 		cout << "Error" << endl;
-	}
+	}*/
 	
 	return 0;
 }

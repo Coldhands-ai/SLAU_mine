@@ -811,7 +811,8 @@ void Matrix::Show(Matrix& temp,int x) {
 	 {
 		 for (size_t j = 0; j < m; j++)
 		 {
-			 X->begin[i][j] = int(begin[i][j]);
+			 modf(begin[i][j],&begin[i][j]);
+			 begin[i][j] *= 1000;
 		 }
 	 }
 	 return *X;
