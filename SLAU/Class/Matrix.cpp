@@ -63,6 +63,11 @@ double Matrix::GaussIntegral(int i, int j, function f2, double a0, double b0)
 	m = 0;
 	permut = 0;
 	det = 1;
+
+	PI = acos(-1);
+	nR = N = a = b = dl = mu1 = mu2 = 0;
+	c[0] = c[1] = c[2] = c[3] = 0;
+	t[0] = t[1] = t[2] = t[3] = 0;
 }
 
  Matrix::Matrix(int n,int m) {
@@ -71,6 +76,11 @@ double Matrix::GaussIntegral(int i, int j, function f2, double a0, double b0)
 	 m = 0;
 	 permut = 0;
 	 det = 1;
+
+	 PI = acos(-1);
+	 nR = N = a = b = dl = mu1 = mu2 = 0;
+	 c[0] = c[1] = c[2] = c[3] = 0;
+	 t[0] = t[1] = t[2] = t[3] = 0;
 
 	 Create(n, m);
  }
@@ -82,6 +92,19 @@ Matrix::Matrix(const Matrix& temp) {
 	this->det = temp.det;
 	this->permut = temp.permut;
 	this->begin = new double * [this->n];
+
+	PI = acos(-1);
+	this->nR = temp.nR;
+	this->N = temp.N;
+	this->a = temp.a;
+	this->b = temp.b;
+	this->dl = temp.dl;
+	this->mu2 = temp.mu2;
+	this->mu1 = temp.mu1;
+	for (int i = 0; i < 4; i++) {
+		this->c[i] = temp.c[i];
+		this->t[i] = temp.t[i];
+	}
 
 	for (int i = 0; i < this->n; i++) {
 		this->begin[i] = new double [this->m] ;
@@ -98,6 +121,10 @@ Matrix::Matrix(double** temp, int n, int m)
 	this->det = 0;
 	this->permut = 0;
 
+	PI = acos(-1);
+	nR = N = a = b = dl = mu1 = mu2 = 0;
+	c[0] = c[1] = c[2] = c[3] = 0;
+	t[0] = t[1] = t[2] = t[3] = 0;
 
 	begin = new double* [n];
 	for (size_t i = 0; i < n; i++)
