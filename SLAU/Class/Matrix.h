@@ -8,6 +8,7 @@ class Matrix
 	double det;
 	int nR; // Размерность
 	int N; // Вариант
+	double PI;
 	double c[4];
 	double t[4];
 	double a, b, dl, mu1, mu2;

@@ -6,6 +6,57 @@
 
 using namespace std;
 
+double Matrix::compulationAij(int i = 1, int j = 1)
+{
+	double a_temp = 0, b_temp = 0;
+	double resultPrev = GaussIntegral(i + 1, j + 1, &Matrix::thetaA, a_temp, b_temp); // делим на два отрезка и суммируем
+	double resultLast = GaussIntegral(i + 1, j + 1, &Matrix::thetaA, a_temp, (b_temp - a_temp) / 2);
+	resultLast += GaussIntegral(i + 1, j + 1, &Matrix::thetaA, (b_temp - a_temp) / 2, b_temp);
+	int count = 3; // 3 деления
+	double delta;
+
+	while (abs(resultLast - resultPrev) > eps) {
+		delta = (b_temp - a_temp) / count;
+		resultPrev = resultLast;
+		resultLast = 0;
+		for (int q1 = 0; q1 < count; q1++)
+			resultLast += GaussIntegral(i + 1, j + 1, &Matrix::thetaA, a_temp + q1 * delta, a_temp + (q1 + 1) * delta);
+		count++;
+	}
+	return resultLast;
+}
+
+double Matrix::compulationBj(int i = 1)
+{
+	double a_temp = 0, b_temp = 0;
+	double resultPrev = GaussIntegral(i + 1, 0, &Matrix::thetaB, a_temp, b_temp); // делим на два отрезка и суммируем
+	double resultLast = GaussIntegral(i + 1, 0, &Matrix::thetaB, a_temp, (b_temp - a_temp) / 2);
+	resultLast += GaussIntegral(i + 1, 0, &Matrix::thetaB, (b_temp - a_temp) / 2, b_temp);
+	int count = 3; // 3 деления
+	double delta;
+
+	while (abs(resultLast - resultPrev) > eps) {
+		delta = (b_temp - a_temp) / count;
+		resultPrev = resultLast;
+		resultLast = 0;
+		for (int q1 = 0; q1 < count; q1++)
+			resultLast += GaussIntegral(i + 1, 0, &Matrix::thetaA, a_temp + q1 * delta, a_temp + (q1 + 1) * delta);
+		count++;
+	}
+	return resultLast;
+}
+
+double Matrix::GaussIntegral(int i, int j, function f2, double a0, double b0)
+{
+	double x_point[4];
+	for (int q1 = 0; q1 < nR; q1++)
+		x_point[q1] = (b0 + a0) / 2 + (b0 - a0) / 2 * t[q1];
+	double sum = 0;
+	for (int q1 = 0; q1 < nR; q1++)
+		sum += c[q1] * (this->*f2)(x_point[0], i, j);
+	return (b0 - a0) / 2 * sum;
+}
+
  Matrix::Matrix() {
 	begin = nullptr;
 	n = 0;
@@ -1192,6 +1243,50 @@ void Matrix::Show(Matrix& temp,int x) {
 	 n++;
  }
 
+ double Matrix::kx(double x, int N)
+ {
+	 return (4 - 0.1 * x) / (pow(x, 2) + N / 16);
+ }
+
+ double Matrix::qx(double x, int N)
+ {
+	 return (x + 5) / (pow(x, 2) + 0.9 * N);
+ }
+
+ double Matrix::fx(double x, int N)
+ {
+	 return (N + x) / 3.5;
+ }
+
+ double Matrix::phi0(double x)
+ {
+	 return mu1 + (mu2 - mu1) * cos(PI / 2 + PI * (x - a) / (2 * (b - a)));
+ }
+
+ double Matrix::derPhi0(double x)
+ {
+	 return (mu2 - mu1) * PI / (2 * (b - a)) * sin((PI * (x - a) / (2 * (b - a))));
+ }
+
+ double Matrix::phiK(double x, int k)
+ {
+	 return cos(PI / 2 + PI * k * (x - a) / (b - a));
+ }
+
+ double Matrix::derPhiK(double x, int k)
+ {
+	 return k * PI / (b - a) * sin(k * PI * (x - a) / (b - a));
+ }
+
+ double Matrix::thetaA(double x, int i, int j)
+ {
+	 return kx(x, N) * derPhiK(x, i) * derPhiK(x, j) + qx(x, N) * phiK(x, i) * phiK(x, j);
+ }
+
+ double Matrix::thetaB(double x, int i, int j)
+ {
+	 return fx(x, N) * phiK(x, i) - qx(x, N) * phi0(x) * phiK(x, i) - kx(x, N) * derPhiK(x, i) * derPhi0(x);
+ }
 
 Matrix& Matrix::operator+(Matrix& temp) {
 	if (this->n != temp.n) {
