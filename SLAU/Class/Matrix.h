@@ -6,6 +6,20 @@ class Matrix
 	int n, m;
 	int permut;
 	double det;
+	int nR; // Размерность
+	int N; // Вариант
+	double c[4];
+	double t[4];
+	double a, b, dl, mu1, mu2;
+	double eps = 0.000001;
+	typedef double (Matrix::* function)(double, int, int);
+	//using function = double(Matrix::*)(double, int, int);
+	function f_ptr;
+	//int N;
+
+	double compulationAij(int, int);
+	double compulationBj(int);
+	double GaussIntegral(int i, int j, function, double, double);
 public:
 	Matrix();
 	Matrix(int, int);
@@ -67,5 +81,15 @@ public:
 	double Norma(void);
 	double NormaVector(int);
 	void append(double);
+
+	double kx(double, int);
+	double qx(double, int);
+	double fx(double, int);
+	double phi0(double);
+	double derPhi0(double);
+	double phiK(double, int);
+	double derPhiK(double, int);
+	double thetaA(double, int, int);
+	double thetaB(double, int, int);
 };
 
