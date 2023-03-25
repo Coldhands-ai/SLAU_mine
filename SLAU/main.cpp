@@ -9,38 +9,46 @@ using namespace std;
 int main() {
 	setlocale(LC_ALL, "rus");
 	Matrix A;
-	A.Create((char*)"A.txt");
-	Matrix* AT=nullptr;
-	cout << "A : " << endl;
-	A.Show();
-	Matrix f;
-	f.Create((char*)"f.txt");
-	cout << "f: " << endl;
-	f.Show();
+	//A.Create((char*)"A.txt");
+	//Matrix* AT=nullptr;
+	//cout << "A : " << endl;
+	//A.Show();
+	//f.Create((char*)"f.txt");
+	//cout << "f: " << endl;
+	//f.Show();
 	//A.Show();
 	//B.Show();
 
 	try {
+		const int N = 14;
+		const int n = 4;
+		double eps = 0.000001;
+		double c[4] = { 0.34785484, 0.65214516, 0.65214516, 0.34785484 };
+		double t[4] = { -0.86113631, -0.33998104, 0.33998104, 0.86113631 };
+		A.SetABDMM(N, n, c,t, eps); // Передаются значения по умолчанию
+		//A.MethodRitz();
+		Matrix *f = &(A.MethodRitz());
+		cout << "Число обусловленности: " << A.Norma() * (*&A.InverseGauss()).Norma()<<endl;
+		cout << "A: \n";
+		A.Show();
+		//A.CreateNULL(n, n);
+		//A.ShowAll(2);
+		cout << "b: \n";
+		f->Show(2);
 
-		cout << "Method KVKornya: " << endl;
-		Matrix* X1 = &(A.MethodKVKor(f));
-		X1->Show(4);
+		Matrix* X = &(A.MethodGauss_bycolumn(*f));
+		cout << "x:\n";
+		X->Show();
 
-		cout << "Nevyazka: " << endl;
-		Matrix* NX1 = &(A*(*X1)-f);
-		NX1->Show(14);
+		Matrix* Nev;
 
-		X1->Integer();
+		cout << "Невязка: \n";
+		Nev = &(A * (*X) - (*f));
+		Nev->Show(20);
 
-		cout << "Method Zeydel: " << endl;
-		Matrix* X2 = &(A.MethodGaussZeydel(f,*X1,0.000001));
-		X2->Show(4);
-
-		cout << "Nevyazka: " << endl;
-		Matrix* NX2 = &(A * (*X2) - f);
-		NX2->Show(14);
-
-		cout << "M(A) = " << A.Norma() * A.InverseGauss().Norma() << endl;
+		cout << "Значения в точках: \n";
+		Matrix* ZinT = &(A.ValuesInPoints(6));
+		ZinT->Show();
 	}
 	catch (...) {
 		cout << "Error" << endl;

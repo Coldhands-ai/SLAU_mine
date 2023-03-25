@@ -21,6 +21,22 @@ class Matrix
 	double compulationAij(int, int);
 	double compulationBj(int);
 	double GaussIntegral(int i, int j, function, double, double);
+	double kx(double, int);
+	double qx(double, int);
+	double fx(double, int);
+	double phi0(double);
+	double derPhi0(double);
+	double phiK(double, int);
+	double derPhiK(double, int);
+	double thetaA(double, int, int);
+	double thetaB(double, int, int);
+	double F1_S(double, double, double);
+	double F2_S(double, double, double);
+	double F3_S(double, double, double);
+	double F1(double, double, double);
+	double F2(double, double, double);
+	double F3(double, double, double);
+	void ReadFile(char*);
 public:
 	Matrix();
 	Matrix(int, int);
@@ -39,7 +55,8 @@ public:
 	void Show(Matrix&);
 	void Show(int);
 	void Show(Matrix&,int);
-	void ReadFile(char*);
+	void ShowAll(int);
+	void SetABDMM(int, int, double[4], double[4], double);
 	Matrix& Transp(void);
 	Matrix& operator+(Matrix&);
 	Matrix& operator+(double);
@@ -65,32 +82,18 @@ public:
 	Matrix& MatrixByVector(Matrix&, Matrix&);
 	Matrix& Pkn(int,int,int);
 	Matrix& Solve_coef(Matrix&, int, int);
+	Matrix& MethodRitz();
+	Matrix& ValuesInPoints(int);
 	int GetN();
 	int GetM();
 	double C(int, int);
 	double ts(int,int);
 	double operator[](int);
-	double F1_S(double,double,double);
-	double F2_S(double,double,double);
-	double F3_S(double,double,double);
-	double F1(double,double,double);
-	double F2(double,double,double);
-	double F3(double,double,double);
 	double max(Matrix&,Matrix&);
 	double max(double,double);
 	double sum(void);
 	double Norma(void);
 	double NormaVector(int);
 	void append(double);
-
-	double kx(double, int);
-	double qx(double, int);
-	double fx(double, int);
-	double phi0(double);
-	double derPhi0(double);
-	double phiK(double, int);
-	double derPhiK(double, int);
-	double thetaA(double, int, int);
-	double thetaB(double, int, int);
 };
 

@@ -8,7 +8,7 @@ using namespace std;
 
 double Matrix::compulationAij(int i = 1, int j = 1)
 {
-	double a_temp = 0, b_temp = 0;
+	double a_temp = a, b_temp = b;
 	double resultPrev = GaussIntegral(i + 1, j + 1, &Matrix::thetaA, a_temp, b_temp); // делим на два отрезка и суммируем
 	double resultLast = GaussIntegral(i + 1, j + 1, &Matrix::thetaA, a_temp, (b_temp - a_temp) / 2);
 	resultLast += GaussIntegral(i + 1, j + 1, &Matrix::thetaA, (b_temp - a_temp) / 2, b_temp);
@@ -28,9 +28,9 @@ double Matrix::compulationAij(int i = 1, int j = 1)
 
 double Matrix::compulationBj(int i = 1)
 {
-	double a_temp = 0, b_temp = 0;
+	double a_temp = a, b_temp = b;
 	double resultPrev = GaussIntegral(i + 1, 0, &Matrix::thetaB, a_temp, b_temp); // делим на два отрезка и суммируем
-	double resultLast = GaussIntegral(i + 1, 0, &Matrix::thetaB, a_temp, (b_temp - a_temp) / 2);
+	double resultLast = GaussIntegral(i + 1, 0, &Matrix::thetaB, a_temp, (b_temp - a_temp) / 2.0);
 	resultLast += GaussIntegral(i + 1, 0, &Matrix::thetaB, (b_temp - a_temp) / 2, b_temp);
 	int count = 3; // 3 деления
 	double delta;
@@ -40,7 +40,7 @@ double Matrix::compulationBj(int i = 1)
 		resultPrev = resultLast;
 		resultLast = 0;
 		for (int q1 = 0; q1 < count; q1++)
-			resultLast += GaussIntegral(i + 1, 0, &Matrix::thetaA, a_temp + q1 * delta, a_temp + (q1 + 1) * delta);
+			resultLast += GaussIntegral(i + 1, 0, &Matrix::thetaB, a_temp + q1 * delta, a_temp + (q1 + 1) * delta);
 		count++;
 	}
 	return resultLast;
@@ -50,11 +50,14 @@ double Matrix::GaussIntegral(int i, int j, function f2, double a0, double b0)
 {
 	double x_point[4];
 	for (int q1 = 0; q1 < nR; q1++)
-		x_point[q1] = (b0 + a0) / 2 + (b0 - a0) / 2 * t[q1];
+		x_point[q1] = (b0 + a0) / 2.0 + (b0 - a0) / 2.0 * t[q1];
 	double sum = 0;
-	for (int q1 = 0; q1 < nR; q1++)
-		sum += c[q1] * (this->*f2)(x_point[0], i, j);
-	return (b0 - a0) / 2 * sum;
+	double aq1 = 0;
+	for (int q1 = 0; q1 < nR; q1++) {
+		aq1 = (this->*f2)(x_point[q1], i, j);
+		sum += c[q1] * aq1;
+	}
+	return (b0 - a0) / 2.0 * sum;
 }
 
  Matrix::Matrix() {
@@ -158,6 +161,12 @@ void Matrix :: Create() {
 	int x;
 	char a[100];
 
+	if (begin != nullptr) {
+		for (int i = 0; i < this->n; i++)
+			delete begin[i];
+		delete begin;
+	}
+
 	cin >> x;
 
 	switch (x) {
@@ -186,6 +195,11 @@ void Matrix::Create(char* S) {
 	//cout << "Заполнение массива\n";
 	if (n < 1 || m < 1)
 		throw "n|m < 1";
+	if (begin != nullptr) {
+		for (int i = 0; i < this->n; i++)
+			delete begin[i];
+		delete begin;
+	}
 	this->n = n;
 	this->m = m;
 	if(begin == nullptr)
@@ -243,10 +257,17 @@ void Matrix::Create(char* S) {
 	//cout << "Заполнение массива\n";
 	if (n < 1 || m < 1)
 		throw "n|m < 1";
+	
+	if (begin != nullptr) {
+		for (int i = 0; i < this->n; i++)
+			delete begin[i];
+		delete begin;
+	}
+	
 	this->n = n;
 	this->m = m;
-	if (begin == nullptr)
-		begin = new double* [n];
+	
+	begin = new double* [n];
 	for (int i = 0; i < n; i++)
 	{
 		begin[i] = new double[m];
@@ -348,12 +369,12 @@ void Matrix::Show(int x) {
 	//cout << "Вывод массива\n";
 	cout << fixed;
 	cout.precision(x);
-
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < m; j++)
 		{
-			cout << "[" << begin[i][j] << "]\t";
+			cout << "[" << begin[i][j];
+			cout << "]\t";
 		}
 		cout << endl;
 	}
@@ -370,9 +391,36 @@ void Matrix::Show(Matrix& temp,int x) {
 	{
 		for (int j = 0; j < m; j++)
 		{
-			cout << "F(" << temp.begin[i][j] << ") = " << begin[i][j] << endl;
+			cout << "F(" << temp.begin[i][j];
+			cout << ") = " << begin[i][j] << endl;
 		}
 	}
+}
+
+void Matrix::ShowAll(int x)
+{
+	//cout << "Вывод массива\n";
+	cout << fixed;
+	cout.precision(x);
+	cout << "Matrix [";
+	cout << this->n;
+	cout << "][";
+	cout << this->m;
+	cout << "]\n";
+
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+		{
+			cout << "[" << begin[i][j];
+			cout << "]   \t";
+		}
+		cout << endl;
+	}
+	cout << "a: " << a << ", b: " << b << ", dl: " << dl << ", mu1: " << mu1 << ", mu2: " << mu2 << endl;
+	cout << "c: "; for (unsigned short i = 0; i < 4; i++) cout << c[i] << " ";
+	cout << "\nt: "; for (unsigned short i = 0; i < 4; i++) cout << t[i] << " ";
+	cout << endl << "eps: " << eps << endl;
 }
 
  Matrix& Matrix::operator*(Matrix& temp) {
@@ -528,7 +576,7 @@ void Matrix::Show(Matrix& temp,int x) {
 	 Matrix right = rightTemp; // Правая матрица - b
 	 Matrix temp(*this); // Левая матрица - A
 	 // Создаем решение СЛАУ
-	 Matrix* X = new Matrix(); // Матрица - x
+	 Matrix* X = new Matrix(rightTemp); // Матрица - x
 	 X->CreateNULL(n, 1); // Создаем на n чисел
 	 double a12 = 0; // Для изменения местами 2-х чисел
 	 double MainEl; // Главный элемент в строке
@@ -1100,6 +1148,41 @@ void Matrix::Show(Matrix& temp,int x) {
 	 return *P;
  }
 
+ Matrix& Matrix::MethodRitz()
+ {
+	 Matrix *FM = new Matrix(*this);
+	 CreateNULL(nR, nR);
+	 FM->CreateNULL(nR,1);
+	 for (int i = 0; i < n; i++)
+	 {
+		 for (int j = 0; j < m; j++)
+		 {
+			 this->begin[i][j] = compulationAij(i, j);
+		 }
+		 FM->begin[i][0] = compulationBj(i);
+	 }
+	 
+	 return *FM;
+ }
+
+ Matrix& Matrix::ValuesInPoints(int n)
+ {
+	 Matrix* temp=new Matrix(*this);
+	 temp->CreateNULL(n,1);
+	 double unx = 0;
+	 double durX = a;
+	 for (int i = 0; i < n; i++) {
+		 unx = phi0(durX);
+		 for (int j = 0; j < this->n; j++)
+		 {
+			 unx += c[j] * phiK(durX, j + 1);
+		 }
+		 temp->begin[i][0] = unx;
+		 durX += dl;
+	 }
+	 return *temp;
+ }
+
  int Matrix::GetN()
  {
 	 return n;
@@ -1272,12 +1355,12 @@ void Matrix::Show(Matrix& temp,int x) {
 
  double Matrix::kx(double x, int N)
  {
-	 return (4 - 0.1 * x) / (pow(x, 2) + N / 16);
+	 return (4.0 - 0.1 * x) / (pow(x, 2) + N / 16.0);
  }
 
  double Matrix::qx(double x, int N)
  {
-	 return (x + 5) / (pow(x, 2) + 0.9 * N);
+	 return (x + 5.0) / (pow(x, 2) + 0.9 * N);
  }
 
  double Matrix::fx(double x, int N)
@@ -1287,17 +1370,17 @@ void Matrix::Show(Matrix& temp,int x) {
 
  double Matrix::phi0(double x)
  {
-	 return mu1 + (mu2 - mu1) * cos(PI / 2 + PI * (x - a) / (2 * (b - a)));
+	 return mu1 + (mu2 - mu1) * cos(PI / 2.0 + PI * (x - a) / (2.0 * (b - a)));
  }
 
  double Matrix::derPhi0(double x)
  {
-	 return (mu2 - mu1) * PI / (2 * (b - a)) * sin((PI * (x - a) / (2 * (b - a))));
+	 return (mu2 - mu1) * PI / (2.0 * (b - a)) * sin((PI * (x - a) / (2.0 * (b - a))));
  }
 
  double Matrix::phiK(double x, int k)
  {
-	 return cos(PI / 2 + PI * k * (x - a) / (b - a));
+	 return cos(PI / 2.0 + PI * k * (x - a) / (b - a));
  }
 
  double Matrix::derPhiK(double x, int k)
@@ -1399,6 +1482,22 @@ Matrix& Matrix::operator=(Matrix& temp) {
 			begin[i][j] = A.begin[i][j];
 		}
 	}
+
+	this->N = temp.N;
+	this->nR = temp.n;
+	this->a = temp.a;
+	this->b = temp.b;
+	this->dl = temp.dl;
+	this->mu1 = temp.mu1;
+	this->mu2 = temp.mu2;
+	this->eps = temp.eps;
+
+	for (unsigned short i = 0; i < 4; i++)
+	{
+		this->c[i] = temp.c[i];
+		this->t[i] = temp.t[i];
+	}
+
 	return *this;
 }
 
@@ -1442,6 +1541,24 @@ void Matrix::ReadFile(char* S) {
 
 	f.close();
 	this->begin = begin;
+}
+
+void Matrix::SetABDMM(int N, int nR, double c[4], double t[4], double eps)
+{
+	this->N = N;
+	this->nR = nR;
+	this->a = 0.6 - 3.0 / this->N;
+	this->b = 2.0 - this->N / 13.0;
+	this->dl=(b - a) / 5.0;
+	this->mu1 = 15.0 / (this->N + 3.0);
+	this->mu2 = -6.0*this->N/21.0;
+	this->eps = eps;
+
+	for (unsigned short i = 0; i < 4; i++)
+	{
+		this->c[i] = c[i];
+		this->t[i] = t[i];
+	}
 }
 
 Matrix& Matrix::Transp(void)
