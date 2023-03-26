@@ -1380,12 +1380,12 @@ void Matrix::ShowAll(int x)
 
  double Matrix::phiK(double x, int k)
  {
-	 return cos(PI / 2.0 + PI * k * (x - a) / (b - a));
+	 return -(pow((b - x), (k + 1)) * (b - 2 * a + x - a * k + k * x)) / (pow(k, 2) + 3 * k + 2);
  }
 
  double Matrix::derPhiK(double x, int k)
  {
-	 return k * PI / (b - a) * sin(k * PI * (x - a) / (b - a));
+	 return pow(b - x, k) * (x - a);
  }
 
  double Matrix::thetaA(double x, int i, int j)
