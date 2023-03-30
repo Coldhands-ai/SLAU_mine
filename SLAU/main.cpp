@@ -21,10 +21,10 @@ int main() {
 
 	try {
 		const int N = 2;
-		const int n = 4;
+		const int n = 3;
 		double eps = 0.000001;
-		double c[4] = { 0.55555556, 0.88888889, 0.55555556, 0.88888889 };
-		double t[4] = { -0.77459667, 0, 0, 0.77459667 };
+		double c[n] = { 0.55555556,0.88888889,0.55555556 };
+		double t[n] = { -0.77459667,0,0.77459667 };
 		A.SetABDMM(N, n, c,t, eps); // Передаются значения по умолчанию
 		//A.MethodRitz();
 		Matrix *f = &(A.MethodRitz());
